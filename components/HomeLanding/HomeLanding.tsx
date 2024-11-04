@@ -1,12 +1,13 @@
 "use client";
 import React, { useState, useEffect, Suspense, useRef, Fragment } from "react";
 import useThemeMode from "@/tool/useThemeMode/useThemeMode";
-import useScrollSnap from "@/tool/useScrollSnap/useScrollSnap";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { baseurl } from "@/tool/BaseURL/BaseURL";
 import { useRouter } from "next/navigation";
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import gsap from "gsap";
+import Image from "next/image";
 
 import {
   AlertDialog,
@@ -29,26 +30,20 @@ import {
 } from "@/components/ui/sheet";
 
 export default function HomeLanding() {
-  const containerRef: React.RefObject<HTMLElement> = React.createRef();
-  const [bind, unbind] = useScrollSnap(
-    containerRef,
-    { snapDestinationY: "90%" },
-    () => console.log("snapped")
-  );
-
   return (
-    <div className="w-full flex flex-col bg-background">
-      <div className="container mx-auto">
-        <Navigation />
-        <main className="flex-grow" ref={containerRef}>
-          <Power/>
-          <Overview/>
-          <Design/>
-          <Specifications/>
-          <Container3D />
-        </main>
-        <Footer />
-      </div>
+    <div className="w-full flex flex-col">
+      <Navigation />
+      <main className="container mx-auto h-fit bg-transparent z-1">
+        <Power />
+        <Overview />
+        <Design />
+        <Specifications />
+        <SteeringSuspension />
+        <Engine />
+        <Wheels />
+      </main>
+      <Container3D />
+      <Footer />
     </div>
   );
 }
@@ -109,7 +104,12 @@ export const Navigation = () => {
     return (
       <header className="w-full flex justify-between items-center pt-3 pb-12">
         <div className="flex items-center">
-          <h1 className="text-xl text-[--gold] font-bold">Centenario</h1>
+          <Image
+            src={`${baseurl + "asset/logo.svg"}`}
+            width={40}
+            height={42}
+            alt="logo"
+          />
         </div>
         <MobileNavigation
           dataMenu={mobileNavigation}
@@ -188,9 +188,14 @@ export const Navigation = () => {
     );
   }
   return (
-    <header className="w-full md:flex sm:hidden justify-between items-center lg:px-0 md:p-4 ">
+    <header className="container mx-auto w-full md:flex sm:hidden justify-between items-center lg:px-0 md:p-4">
       <div className="flex items-center">
-        <h1 className="text-xl text-[--gold] font-bold">Centenario</h1>
+        <Image
+          src={`${baseurl + "asset/logo.svg"}`}
+          width={40}
+          height={42}
+          alt="logo"
+        />
       </div>
       <nav className="flex space-x-4 items-center">
         <a
@@ -247,7 +252,7 @@ export const Navigation = () => {
         />
         <button
           onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-          className="bg-black dark:bg-[--gold] text-white rounded-full px-[1rem] py-[.5rem] text-sm font-bold flex flex-row items-center"
+          className="bg-[--gold] text-white rounded-full px-[1rem] py-[.5rem] text-sm font-bold flex flex-row items-center"
         >
           {theme === "dark" ? (
             <Fragment>
@@ -300,41 +305,371 @@ export const Navigation = () => {
   );
 };
 
-export const Power = ()=>{
-  return(
-    <div className="section w-full h-screen">Power</div>
-  )
-}
-export const Overview = ()=>{
-  return(
-    <div className="section w-full h-screen">Overview</div>
-  )
-}
-export const Design = ()=>{
-  return(
-    <div className="section w-full h-screen">Design</div>
-  )
-}
-export const Specifications = ()=>{
-  return(
-    <div className="section w-full h-screen">Specifications</div>
-  )
-}
+export const Power = () => {
+  return (
+    <div
+      id="Power"
+      className="section w-full h-screen flex flex-col items-center relative"
+    >
+      <div className="w-1/3 text-center mt-3">
+        <h5 className="text-[--gold] text-3xl font-semibold">Lamborghini</h5>
+        <h1 className="text-7xl font-semibold">Centenario</h1>
+      </div>
+      <div className="w-1/3 absolute bottom-[15vh]">
+        <ul className=" flex flex-row justify-between text-center my-6 px-8 py-4 bg-background rounded-full">
+          <li>
+            <h1 className="text-[--gold] text-sm font-semibold">POWER</h1>
+            <p className="text-sm">770 CV / 566 kW</p>
+          </li>
+          <li>
+            <h1 className="text-[--gold] text-sm font-semibold">MAX. SPEED</h1>
+            <p className="text-sm">{`>350 km/h`}</p>
+          </li>
+          <li>
+            <h1 className="text-[--gold] text-sm font-semibold">0-100 km/h</h1>
+            <p className="text-sm">{`<2,9 s`}</p>
+          </li>
+        </ul>
+      </div>
+    </div>
+  );
+};
+export const Overview = () => {
+  return (
+    <div
+      id="Overview"
+      className="section w-full h-screen flex flex-row items-center"
+    >
+      <div className="w-1/2 "></div>
+      <div className="w-1/2 px-8 py-5 bg-white/80 dark:bg-black/80 rounded-[10px] text-pretty">
+        <h1 className="text-[--gold] text-3xl font-semibold mb-6">OVERVIEW</h1>
+        <p className="text-black dark:text-white text-xl mb-5">
+          The Lamborghini Centenario exemplifies the innovative design and
+          engineering skills of the House of the Raging Bull. The finest
+          possible tribute to our founder Ferruccio Lamborghini on the centenary
+          of his birth, it is an homage to his vision and the future he believed
+          in—a vision that we at Lamborghini still embrace.
+        </p>
+      </div>
+    </div>
+  );
+};
+export const Design = () => {
+  return (
+    <div
+      id="Design"
+      className="section w-full h-screen flex flex-row items-center"
+    >
+      <div className="w-1/2 px-8 py-5 bg-white/80 dark:bg-black/80 rounded-[10px] text-pretty">
+        <h1 className="text-[--gold] text-3xl font-semibold mb-6">DESIGN</h1>
+        <p className="text-black dark:text-white text-xl mb-5">
+          Here are the technical characteristics of the Lamborghini Centenario:
+          equipped with a 770 CV aspirated V12 engine springing from 0 to 100
+          km/h in 2.8 seconds, the newly-born Lamborghini car has been produced
+          in a limited edition, for a total of 40 models: 20 Coupés and 20
+          Roadsters will be delivered to Lamborghini collectors and fans
+          starting from 2017.
+        </p>
+        <p className="text-black dark:text-white text-xl mb-5">
+          The Centenario has been conceived with the purpose of exploring new
+          technological and design opportunities, to look at the future through
+          the lens of innovation. One of the most exclusive (and sought-after)
+          cars in the whole world.
+        </p>
+      </div>
+      <div className="w-1/2 "></div>
+    </div>
+  );
+};
+export const Specifications = () => {
+  return (
+    <div
+      id="Specifications"
+      className="section w-full h-screen flex flex-row items-center"
+    >
+      <div className="w-1/2 "></div>
+      <div className="w-1/2 px-8 py-5 bg-white/80 dark:bg-black/80 rounded-[10px] text-pretty">
+        <h1 className="text-[--gold] text-3xl font-semibold mb-6">
+          SPECIFICATIONS
+        </h1>
+        <ScrollArea className="w-full max-h-[50vh]">
+          <ul className="w-full text-sm text-pretty list-disc mb-5">
+            <li className="w-full flex flex-row justify-between mb-7">
+              <span className="w-1/2 text-black dark:text-white font-semibold">
+                DISPLACEMENT
+              </span>
+              <span className="w-1/2 text-black dark:text-white">
+                6.498 cm³ (396.5 cu in)
+              </span>
+            </li>
+            <li className="w-full flex flex-row justify-between mb-7">
+              <span className="w-1/2 text-black dark:text-white font-semibold">
+                MAX. POWER
+              </span>
+              <span className="w-1/2 text-black dark:text-white">
+                770 CV (566 kW) @ 8.500 rpm
+              </span>
+            </li>
+            <li className="w-full flex flex-row justify-between mb-7">
+              <span className="w-1/2 text-black dark:text-white font-semibold">
+                MAX. SPEED
+              </span>
+              <span className="w-1/2 text-black dark:text-white">{`>350 km/h (217 mph)`}</span>
+            </li>
+            <li className="w-full flex flex-row justify-between mb-7">
+              <span className="w-1/2 text-black dark:text-white font-semibold">
+                ACCELERATION 0-100 KM/H (0-62 MPH)
+              </span>
+              <span className="w-1/2 text-black dark:text-white">2,8 s</span>
+            </li>
+            <li className="w-full flex flex-row justify-between mb-7">
+              <span className="w-1/2 text-black dark:text-white font-semibold">
+                NUMBER OF CYLINDERS
+              </span>
+              <span className="w-1/2 text-black dark:text-white">12</span>
+            </li>
+            <li className="w-full flex flex-row justify-between mb-7">
+              <span className="w-1/2 text-black dark:text-white font-semibold">
+                TRANSMISSION
+              </span>
+              <span className="w-1/2 text-black dark:text-white">
+                Electronically controlled all-wheel drive system (Haldex gen.
+                IV) with rear mechanical self-locking differential
+              </span>
+            </li>
+          </ul>
+        </ScrollArea>
+      </div>
+    </div>
+  );
+};
+export const SteeringSuspension = () => {
+  return (
+    <div
+      id="SteeringSuspension"
+      className="section w-full h-screen flex flex-row items-center"
+    >
+      <div className="w-1/2 px-8 py-5 bg-white/80 dark:bg-black/80 rounded-[10px] text-pretty">
+        <h1 className="text-[--gold] text-3xl font-semibold mb-6">
+          STEERING AND SUSPENSION
+        </h1>
+        <ScrollArea className="w-full max-h-[50vh]">
+          <ul className="w-full text-sm text-pretty list-disc mb-5">
+            <li className="w-full flex flex-row justify-between mb-7">
+              <span className="w-[35%] text-black dark:text-white font-semibold">
+                CONTROL SYSTEMS
+              </span>
+              <span className="w-[60%] text-black dark:text-white">
+                Electronic Stability Control (ABS e TCS integrated)
+              </span>
+            </li>
+            <li className="w-full flex flex-row justify-between mb-7">
+              <span className="w-[35%] text-black dark:text-white font-semibold">
+                SUSPENSION TYPE
+              </span>
+              <span className="w-[60%] text-black dark:text-white">
+                Push rod magneto-rheologic active front and rear suspension with
+                horizontal dampers and springs
+              </span>
+            </li>
+            <li className="w-full flex flex-row justify-between mb-7">
+              <span className="w-[35%] text-black dark:text-white font-semibold">
+                SUSPENSION GEOMETRY
+              </span>
+              <span className="w-[60%] text-black dark:text-white">
+                Double wishbone fully independent suspension
+              </span>
+            </li>
+            <li className="w-full flex flex-row justify-between mb-7">
+              <span className="w-[35%] text-black dark:text-white font-semibold">
+                STEERING TYPE
+              </span>
+              <span className="w-[60%] text-black dark:text-white">
+                Hydraulic assisted power steering
+              </span>
+            </li>
+            <li className="w-full flex flex-row justify-between mb-7">
+              <span className="w-[35%] text-black dark:text-white font-semibold">
+                STEERING SYSTEM
+              </span>
+              <span className="w-[60%] text-black dark:text-white">
+                LDS (Lamborghini Dynamic Steering) with variable steering ratio;
+                Lamborghini rear-wheel steering system
+              </span>
+            </li>
+          </ul>
+        </ScrollArea>
+      </div>
+      <div className="w-1/2 "></div>
+    </div>
+  );
+};
+export const Engine = () => {
+  return (
+    <div
+      id="Engine"
+      className="section w-full h-screen flex flex-row items-center"
+    >
+      <div className="w-1/2 px-8 py-5 bg-white/80 dark:bg-black/80 rounded-[10px] text-pretty">
+        <h1 className="text-[--gold] text-3xl font-semibold mb-6">ENGINE</h1>
+        <ScrollArea className="w-full max-h-[50vh]">
+          <ul className="w-full text-sm text-pretty list-disc mb-5">
+            <li className="w-full flex flex-row justify-between mb-7">
+              <span className="w-1/2 text-black dark:text-white font-semibold">
+                TYPE
+              </span>
+              <span className="w-1/2 text-black dark:text-white">
+                V12, 60°, MPI (Multi Point Injection)
+              </span>
+            </li>
+            <li className="w-full flex flex-row justify-between mb-7">
+              <span className="w-1/2 text-black dark:text-white font-semibold">
+                DISPLACEMENT
+              </span>
+              <span className="w-1/2 text-black dark:text-white">
+                6.498 cm³ (396.5 cu in)
+              </span>
+            </li>
+            <li className="w-full flex flex-row justify-between mb-7">
+              <span className="w-1/2 text-black dark:text-white font-semibold">
+                BORE X STROKE
+              </span>
+              <span className="w-1/2 text-black dark:text-white">
+                95 mm x 76,4 mm (3.74 x 3.01 in)
+              </span>
+            </li>
+            <li className="w-full flex flex-row justify-between mb-7">
+              <span className="w-1/2 text-black dark:text-white font-semibold">
+                COMPRESSION RATIO
+              </span>
+              <span className="w-1/2 text-black dark:text-white">
+                11,8:1 ± 0,2
+              </span>
+            </li>
+            <li className="w-full flex flex-row justify-between mb-7">
+              <span className="w-1/2 text-black dark:text-white font-semibold">
+                MAX. POWER
+              </span>
+              <span className="w-1/2 text-black dark:text-white">
+                770 CV (566 kW) @ 8.500 rpm
+              </span>
+            </li>
+            <li className="w-full flex flex-row justify-between mb-7">
+              <span className="w-1/2 text-black dark:text-white font-semibold">
+                MAX. TORQUE
+              </span>
+              <span className="w-1/2 text-black dark:text-white">
+                690 Nm (507 lb.-ft.) @ 5.500 rpm
+              </span>
+            </li>
+            <li className="w-full flex flex-row justify-between mb-7">
+              <span className="w-1/2 text-black dark:text-white font-semibold">
+                WEIGHT-TO-POWER RATIO
+              </span>
+              <span className="w-1/2 text-black dark:text-white">
+                1,97 kg/CV (4.35 lb/CV)
+              </span>
+            </li>
+            <li className="w-full flex flex-row justify-between mb-7">
+              <span className="w-1/2 text-black dark:text-white font-semibold">
+                LUBRICATION
+              </span>
+              <span className="w-1/2 text-black dark:text-white">Dry sump</span>
+            </li>
+            <li className="w-full flex flex-row justify-between mb-7">
+              <span className="w-1/2 text-black dark:text-white font-semibold">
+                EMISSION CONTROL
+              </span>
+              <span className="w-1/2 text-black dark:text-white">
+                Euro 6 - LEV 2
+              </span>
+            </li>
+          </ul>
+        </ScrollArea>
+      </div>
+      <div className="w-1/2 "></div>
+    </div>
+  );
+};
+export const Wheels = () => {
+  return (
+    <div
+      id="Wheels"
+      className="section w-full h-screen flex flex-row items-center"
+    >
+      <div className="w-1/2 "></div>
+      <div className="w-1/2 px-8 py-5 bg-white/80 dark:bg-black/80 rounded-[10px] text-pretty">
+        <h1 className="text-[--gold] text-3xl font-semibold mb-6">WHEELS</h1>
+        <ScrollArea className="w-full max-h-[50vh]">
+          <ul className="w-full text-sm text-pretty list-disc mb-5">
+            <li className="w-full flex flex-row justify-between mb-7">
+              <span className="w-1/2 text-black dark:text-white font-semibold">
+                RIMS - FRONT
+              </span>
+              <span className="w-1/2 text-black dark:text-white">
+                {`20'' specific forged rims; 9J x 20 ET17.2`}
+              </span>
+            </li>
+            <li className="w-full flex flex-row justify-between mb-7">
+              <span className="w-1/2 text-black dark:text-white font-semibold">
+                RIMS - REAR
+              </span>
+              <span className="w-1/2 text-black dark:text-white">
+                {`21'' specific forged rims; 13J x 21 ET51.7`}
+              </span>
+            </li>
+            <li className="w-full flex flex-row justify-between mb-7">
+              <span className="w-1/2 text-black dark:text-white font-semibold">
+                TIRES - FRONT
+              </span>
+              <span className="w-1/2 text-black dark:text-white">
+                255/30 ZR20
+              </span>
+            </li>
+            <li className="w-full flex flex-row justify-between mb-7">
+              <span className="w-1/2 text-black dark:text-white font-semibold">
+                TIRES - REAR
+              </span>
+              <span className="w-1/2 text-black dark:text-white">
+                355/25 ZR21
+              </span>
+            </li>
+          </ul>
+        </ScrollArea>
+      </div>
+    </div>
+  );
+};
 
 export const Container3D = () => {
-  const birdRef = useRef<THREE.Object3D | null>(null);
+  const carRef = useRef<THREE.Object3D | null>(null);
   const mixerRef = useRef<THREE.AnimationMixer | null>(null);
   const resizeTimeout = useRef<NodeJS.Timeout | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
+  const animationsMapRef = useRef<any | null>();
 
   const loadModel = async () => {
     const scene = new THREE.Scene();
     const loader = new GLTFLoader();
     const renderer = new THREE.WebGLRenderer({ alpha: true });
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.3);
-    const topLight = new THREE.DirectionalLight(0xffffff, 1.3);
-    let camera: THREE.PerspectiveCamera;
+    let camera: THREE.PerspectiveCamera | undefined;
+
+    // Existing lights
+    const light = new THREE.AmbientLight(0xffffff, 3); // Lower ambient light intensity for more contrast
+    const topLight = new THREE.DirectionalLight(0xffffff, 1.2);
+    topLight.position.set(500, 500, 500);
+
+    // Additional lighting for realism
+    const keyLight = new THREE.DirectionalLight(0xffffff, 0.8); // Main light source, acts like sunlight
+    keyLight.position.set(3, 10, 7.5);
+    keyLight.castShadow = true;
+
+    const fillLight = new THREE.PointLight(0xffffff, 1); // Softer, diffused light to fill shadows
+    fillLight.position.set(-5, 5, 5);
+
+    const backLight = new THREE.DirectionalLight(0xffffff, 10); // Light from behind for edge highlights
+    backLight.position.set(-0.5, 10, -5);
 
     // Screen
     const desktop = window.matchMedia("(min-width: 1024px)").matches;
@@ -351,109 +686,149 @@ export const Container3D = () => {
     // Positions Object
     const positionObject = [
       {
-        id: "Section01",
-        position: { x: 2.5, y: 0.2, z: 0 },
-        rotation: { x: 0, y: -1, z: 0 },
+        id: "Power",
+        position: { x: 0.2, y: -0.7, z: 8 },
+        rotation: { x: 0, y: -0.5, z: 0 },
       },
       {
-        id: "Section02",
-        position: { x: -3, y: 0, z: 0 },
-        rotation: { x: 1, y: -0.5, z: 0 },
+        id: "Overview",
+        position: { x: 0, y: -0.7, z: 11 },
+        rotation: { x: 0, y: 0, z: 0 },
       },
       {
-        id: "Section03",
+        id: "Design",
         position: { x: 2.7, y: 0, z: 0 },
         rotation: { x: 0, y: 1, z: 0 },
       },
       {
-        id: "Section04",
+        id: "Specifications",
         position: { x: 1, y: -1, z: 0 },
         rotation: { x: 0, y: -1, z: 0 },
       },
       {
-        id: "Section05",
-        position: { x: 2.5, y: 0.5, z: 0 },
+        id: "SteeringSuspension",
+        position: { x: 1, y: -1, z: 0 },
+        rotation: { x: 0, y: -1, z: 0 },
+      },
+      {
+        id: "Engine",
+        position: { x: 1, y: -1, z: 0 },
+        rotation: { x: 0, y: -1, z: 0 },
+      },
+      {
+        id: "Wheels",
+        position: { x: 1, y: -1, z: 0 },
         rotation: { x: 0, y: -1, z: 0 },
       },
     ];
     const positionObject_MD_Portrait = [
       {
-        id: "Section01",
+        id: "Power",
         position: { x: 1.5, y: 3, z: 0 },
         rotation: { x: 0, y: -1, z: 0 },
       },
       {
-        id: "Section02",
+        id: "Overview",
         position: { x: -2, y: 0.5, z: 0 },
         rotation: { x: 1, y: -0.5, z: 0 },
       },
       {
-        id: "Section03",
+        id: "Design",
         position: { x: 1.7, y: 1, z: 0 },
         rotation: { x: 0, y: 1, z: 0 },
       },
       {
-        id: "Section04",
+        id: "Specifications",
         position: { x: 1, y: -0.5, z: 0 },
         rotation: { x: 0, y: -1, z: 0 },
       },
       {
-        id: "Section05",
-        position: { x: 1.5, y: 1, z: 0 },
+        id: "SteeringSuspension",
+        position: { x: 1, y: -0.5, z: 0 },
+        rotation: { x: 0, y: -1, z: 0 },
+      },
+      {
+        id: "Engine",
+        position: { x: 1, y: -0.5, z: 0 },
+        rotation: { x: 0, y: -1, z: 0 },
+      },
+      {
+        id: "Wheels",
+        position: { x: 1, y: -0.5, z: 0 },
         rotation: { x: 0, y: -1, z: 0 },
       },
     ];
     const positionObject_MD = [
       {
-        id: "Section01",
+        id: "Power",
         position: { x: 1.5, y: 3, z: 0 },
         rotation: { x: 0, y: -1, z: 0 },
       },
       {
-        id: "Section02",
+        id: "Overview",
         position: { x: -2, y: 0.5, z: 0 },
         rotation: { x: 1, y: -0.5, z: 0 },
       },
       {
-        id: "Section03",
+        id: "Design",
         position: { x: 1.7, y: 1, z: 0 },
         rotation: { x: 0, y: 1, z: 0 },
       },
       {
-        id: "Section04",
+        id: "Specifications",
         position: { x: 1, y: -0.5, z: 0 },
         rotation: { x: 0, y: -1, z: 0 },
       },
       {
-        id: "Section05",
-        position: { x: 1.5, y: 1, z: 0 },
+        id: "SteeringSuspension",
+        position: { x: 1, y: -0.5, z: 0 },
+        rotation: { x: 0, y: -1, z: 0 },
+      },
+      {
+        id: "Engine",
+        position: { x: 1, y: -0.5, z: 0 },
+        rotation: { x: 0, y: -1, z: 0 },
+      },
+      {
+        id: "Wheels",
+        position: { x: 1, y: -0.5, z: 0 },
         rotation: { x: 0, y: -1, z: 0 },
       },
     ];
     const positionObject_SM = [
       {
-        id: "Section01",
+        id: "Power",
         position: { x: 0, y: -2, z: 0 },
         rotation: { x: 0, y: -1, z: 0 },
       },
       {
-        id: "Section02",
+        id: "Overview",
         position: { x: 0, y: -4, z: 0 },
         rotation: { x: -1, y: 3, z: 1 },
       },
       {
-        id: "Section03",
+        id: "Design",
         position: { x: 0, y: -3, z: 0 },
         rotation: { x: 0, y: 1.5, z: 0 },
       },
       {
-        id: "Section04",
+        id: "Specifications",
         position: { x: 1.5, y: -1, z: 0 },
         rotation: { x: 0, y: -1, z: 0 },
       },
       {
-        id: "Section05",
-        position: { x: 1.5, y: 0.5, z: 0 },
+        id: "SteeringSuspension",
+        position: { x: 1.5, y: -1, z: 0 },
+        rotation: { x: 0, y: -1, z: 0 },
+      },
+      {
+        id: "Engine",
+        position: { x: 1.5, y: -1, z: 0 },
+        rotation: { x: 0, y: -1, z: 0 },
+      },
+      {
+        id: "Wheels",
+        position: { x: 1.5, y: -1, z: 0 },
         rotation: { x: 0, y: -1, z: 0 },
       },
     ];
@@ -506,22 +881,37 @@ export const Container3D = () => {
     };
 
     setCamera();
+
+    if (camera === undefined) return;
+    renderer.domElement.style.zIndex = "-1";
     renderer.setSize(window.innerWidth, window.innerHeight);
     const element = document.getElementById("container3D");
-    if (element) element.appendChild(renderer.domElement);
+
+    if (element) {
+      const childToBeRemoved = element.querySelector("canvas");
+      if (childToBeRemoved) element.removeChild(childToBeRemoved);
+      element.appendChild(renderer.domElement);
+    }
 
     rendererRef.current = renderer;
-    scene.add(ambientLight, topLight);
+    scene.add(light, topLight, keyLight, fillLight, backLight);
     topLight.position.set(500, 500, 500);
 
     loader.load(
       `${baseurl}asset/lamborghini_centenario_lp-770_interior_sdc.glb`,
       (gltf) => {
-        birdRef.current = gltf.scene;
-        scene.add(birdRef.current);
+        carRef.current = gltf.scene;
+        scene.add(carRef.current);
 
-        mixerRef.current = new THREE.AnimationMixer(birdRef.current);
-        mixerRef.current.clipAction(gltf.animations[0]).play();
+        mixerRef.current = new THREE.AnimationMixer(carRef.current);
+        animationsMapRef.current = new Map();
+
+        // Store animations by name for later access
+        gltf.animations.forEach((clip) => {
+          const action = mixerRef.current!.clipAction(clip);
+          animationsMapRef.current.set(clip.name, action);
+        });
+
         modelMove();
       }
     );
@@ -533,6 +923,7 @@ export const Container3D = () => {
         mixerRef.current?.update(0.02);
       }
     };
+
     animate();
 
     const modelMove = () => {
@@ -565,10 +956,10 @@ export const Container3D = () => {
         (elm) => elm.id === currentSection
       );
 
-      if (positionActive >= 0 && birdRef.current !== null) {
+      if (positionActive >= 0 && carRef.current !== null) {
         const newCordinate = position3DModel();
 
-        gsap.to(birdRef.current.position, {
+        gsap.to(carRef.current.position, {
           y: newCordinate?.position.y,
           x: newCordinate?.position.x,
           z: newCordinate?.position.z,
@@ -576,26 +967,36 @@ export const Container3D = () => {
           ease: "power1.out",
         });
 
-        gsap.to(birdRef.current.rotation, {
+        gsap.to(carRef.current.rotation, {
           y: newCordinate?.rotation.y,
           x: newCordinate?.rotation.x,
           z: newCordinate?.rotation.z,
           duration: 1,
           ease: "power1.out",
         });
+
+        // Example: play a specific animation clip based on section ID
+        if (currentSection && currentSection === "Overview") {
+          const action = animationsMapRef.current.get("Animation");
+          if (action) {
+            action.reset();
+            action.setLoop(THREE.LoopOnce, 0); // Play once, no looping
+            action.clampWhenFinished = true; // Stop at the last frame
+            action.play();
+          }
+        } else {
+          const action = animationsMapRef.current.get("Animation");
+          if (action) action.reset().stop();
+        }
       }
     };
+    modelMove();
 
     // Throttled scroll handler
-    let isScrolling = false;
     const handleScroll = () => {
-      if (!isScrolling) {
-        isScrolling = true;
-        requestAnimationFrame(() => {
-          modelMove();
-          isScrolling = false;
-        });
-      }
+      requestAnimationFrame(() => {
+        modelMove();
+      });
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -628,7 +1029,7 @@ export const Container3D = () => {
   return (
     <div
       id="container3D"
-      className="fixed inset-0 z-50 pointer-events-none"
+      className="fixed inset-0 z-[-1] pointer-events-none"
     ></div>
   );
 };
@@ -641,7 +1042,11 @@ export const Footer = () => {
   const copyright = [
     {
       description:
-        "1. LowPoly humming-bird animated (https://skfb.ly/o9YBx) by alexi.smnd is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).",
+        "1. Lamborghini Logo by worldvectorlogo.com is licensed under https://worldvectorlogo.com/terms-of-use.",
+    },
+    {
+      description:
+        "2. Lamborghini Centenario LP-770 Interior SDC - (https://skfb.ly/6Z9tX) by SDC PERFORMANCE™️ is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).",
     },
   ];
 
@@ -653,7 +1058,7 @@ export const Footer = () => {
   ];
 
   return (
-    <footer className="w-full p-4 border-t border-gray-200">
+    <footer className="container mx-auto w-full p-4 border-t border-gray-200">
       <div className="flex md:flex-row sm:flex-col md:justify-between  md:items-center">
         <p className="text-gray-600 sm:text-center sm:mb-2">
           &copy; {year} Future Project
