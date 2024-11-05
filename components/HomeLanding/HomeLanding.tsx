@@ -2,12 +2,14 @@
 import React, { useState, useEffect, Suspense, useRef, Fragment } from "react";
 import useThemeMode from "@/tool/useThemeMode/useThemeMode";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Progress } from "@/components/ui/progress";
 import { baseurl } from "@/tool/BaseURL/BaseURL";
 import { useRouter } from "next/navigation";
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import gsap from "gsap";
 import Image from "next/image";
+import $ from "jquery";
 
 import {
   AlertDialog,
@@ -28,22 +30,73 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { div } from "three/webgpu";
 
 export default function HomeLanding() {
+  const [count, setCount] = useState(1);
+  const intervalTime = 10000 / 100;
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCount((prevCount) => {
+        if (prevCount === 100) {
+          clearInterval(interval);
+          return prevCount;
+        }
+        return prevCount + 1;
+      });
+    }, intervalTime);
+
+    // Clean up the interval on component unmount
+    return () => clearInterval(interval);
+  }, []);
+
+  // Show Hide
+  const [isLoadOver, setisLoadOver] = useState<boolean>(false);
+  useEffect(() => {
+    $("html, body").css({
+      overflow: "hidden",
+      height: "100%",
+    });
+
+    if (count === 100) {
+      $("html, body").css({
+        overflow: "auto",
+        height: "auto",
+      });
+      setTimeout(() => {
+        $("#loading").hide();
+        setisLoadOver(true);
+      }, 2000);
+    }
+  }, [count]);
+
   return (
-    <div className="w-full flex flex-col">
-      <Navigation />
-      <main className="container mx-auto h-fit bg-transparent z-1">
-        <Power />
-        <Overview />
-        <Design />
-        <Specifications />
-        <SteeringSuspension />
-        <Engine />
-        <Wheels />
-      </main>
-      <Container3D />
-      <Footer />
+    <div
+      id="container"
+      className="w-full h-screen flex flex-col overflow-y-scroll snap-y snap-mandatory relative"
+    >
+      {/* Fixed Navigation */}
+      <div className="fixed top-0 w-full z-10">
+        <Navigation />
+      </div>
+
+      <Loading number={count} />
+
+      {/* Snap Sections with margin to offset from the fixed navbar */}
+      {isLoadOver === true && (
+        <Fragment>
+          <Container3D />
+          <CarBlockContainer />
+          <Power />
+          <Overview />
+          <Design />
+          <Specifications />
+          <SteeringSuspension />
+          <Engine />
+          <Wheels />
+        </Fragment>
+      )}
     </div>
   );
 }
@@ -188,7 +241,7 @@ export const Navigation = () => {
     );
   }
   return (
-    <header className="container mx-auto w-full md:flex sm:hidden justify-between items-center lg:px-0 md:p-4">
+    <header className="container mx-auto w-full md:flex sm:hidden flex justify-between items-center lg:px-0 md:p-4 fixed top-0 left-0 right-0 z-50">
       <div className="flex items-center">
         <Image
           src={`${baseurl + "asset/logo.svg"}`}
@@ -197,7 +250,7 @@ export const Navigation = () => {
           alt="logo"
         />
       </div>
-      <nav className="flex space-x-4 items-center">
+      <nav className="flex space-x-4 items-center bg-background dark:bg-background px-6 py-2 rounded-full">
         <a
           href="#Section03"
           className="text-gray-600 hover:text-[--gold] dark:text-white dark:hover:text-[--gold] text-sm font-bold px-[1rem]"
@@ -305,17 +358,74 @@ export const Navigation = () => {
   );
 };
 
+type Loading = {
+  number: number;
+};
+export const Loading = ({ number }: Loading) => {
+  return (
+    <div
+      id="loading"
+      className={`w-full h-screen flex justify-center items-center z-49 bg-background `}
+    >
+      <div className="w-1/3 mx-auto flex flex-col items-center">
+        <h1 className="text-black dark:text-white text-sm font-semibold">
+          Loading
+        </h1>
+        <Progress
+          value={number}
+          className="w-full bg-white dark:bg-black my-3"
+        />
+        <h5 className="text-black dark:text-white text-sm font-semibold">
+          {number}%
+        </h5>
+      </div>
+    </div>
+  );
+};
+
+export const CarBlockContainer = () => {
+  return (
+    <div className="w-full h-screen absolute top-0 left-0 right-0 bottom-0 bg-transparent z-1">
+      <div className="w-full h-screen"></div>
+      <div className="w-full h-screen flex flex-row">
+        <div className="w-1/2"></div>
+        <div className="w-1/2 bg-white/90 dark:bg-[#181818]/90"></div>
+      </div>
+      <div className="w-full h-screen flex flex-row">
+        <div className="w-1/2 bg-white/90 dark:bg-[#181818]/90"></div>
+        <div className="w-1/2"></div>
+      </div>
+      <div className="w-full h-screen flex flex-row">
+        <div className="w-1/2"></div>
+        <div className="w-1/2 bg-white/90 dark:bg-[#181818]/90"></div>
+      </div>
+      <div className="w-full h-screen flex flex-row">
+        <div className="w-1/2 bg-white/90 dark:bg-[#181818]/90"></div>
+        <div className="w-1/2"></div>
+      </div>
+      <div className="w-full h-screen flex flex-row">
+        <div className="w-1/2"></div>
+        <div className="w-1/2 bg-white/90 dark:bg-[#181818]/90"></div>
+      </div>
+      <div className="w-full h-screen flex flex-row">
+        <div className="w-1/2 bg-white/90 dark:bg-[#181818]/90"></div>
+        <div className="w-1/2"></div>
+      </div>
+    </div>
+  );
+};
+
 export const Power = () => {
   return (
     <div
       id="Power"
-      className="section w-full h-screen flex flex-col items-center relative"
+      className="section snap-start shrink-0 w-full h-screen flex flex-col items-center pt-24 container z-[2] mx-auto relative"
     >
       <div className="w-1/3 text-center mt-3">
         <h5 className="text-[--gold] text-3xl font-semibold">Lamborghini</h5>
         <h1 className="text-7xl font-semibold">Centenario</h1>
       </div>
-      <div className="w-1/3 absolute bottom-[15vh]">
+      <div className="w-1/3 absolute bottom-[5vh]">
         <ul className=" flex flex-row justify-between text-center my-6 px-8 py-4 bg-background rounded-full">
           <li>
             <h1 className="text-[--gold] text-sm font-semibold">POWER</h1>
@@ -338,18 +448,22 @@ export const Overview = () => {
   return (
     <div
       id="Overview"
-      className="section w-full h-screen flex flex-row items-center"
+      className="section snap-start shrink-0 w-full h-screen flex flex-row items-center container z-[2] mx-auto"
     >
       <div className="w-1/2 "></div>
-      <div className="w-1/2 px-8 py-5 bg-white/80 dark:bg-black/80 rounded-[10px] text-pretty">
-        <h1 className="text-[--gold] text-3xl font-semibold mb-6">OVERVIEW</h1>
-        <p className="text-black dark:text-white text-xl mb-5">
-          The Lamborghini Centenario exemplifies the innovative design and
-          engineering skills of the House of the Raging Bull. The finest
-          possible tribute to our founder Ferruccio Lamborghini on the centenary
-          of his birth, it is an homage to his vision and the future he believed
-          in—a vision that we at Lamborghini still embrace.
-        </p>
+      <div className="w-1/2 h-screen flex justify-center items-center text-pretty">
+        <div className="px-8 py-5">
+          <h1 className="text-[--gold] text-3xl font-semibold mb-6">
+            OVERVIEW
+          </h1>
+          <p className="text-black dark:text-white text-xl mb-5">
+            The Lamborghini Centenario exemplifies the innovative design and
+            engineering skills of the House of the Raging Bull. The finest
+            possible tribute to our founder Ferruccio Lamborghini on the
+            centenary of his birth, it is an homage to his vision and the future
+            he believed in—a vision that we at Lamborghini still embrace.
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -358,9 +472,9 @@ export const Design = () => {
   return (
     <div
       id="Design"
-      className="section w-full h-screen flex flex-row items-center"
+      className="section snap-start shrink-0 w-full h-screen flex flex-row justify-center items-center container z-[2] mx-auto"
     >
-      <div className="w-1/2 px-8 py-5 bg-white/80 dark:bg-black/80 rounded-[10px] text-pretty">
+      <div className="w-1/2 px-8 py-5 text-pretty ">
         <h1 className="text-[--gold] text-3xl font-semibold mb-6">DESIGN</h1>
         <p className="text-black dark:text-white text-xl mb-5">
           Here are the technical characteristics of the Lamborghini Centenario:
@@ -385,10 +499,10 @@ export const Specifications = () => {
   return (
     <div
       id="Specifications"
-      className="section w-full h-screen flex flex-row items-center"
+      className="section snap-start shrink-0 w-full h-screen flex flex-row items-center container z-[2] mx-auto"
     >
       <div className="w-1/2 "></div>
-      <div className="w-1/2 px-8 py-5 bg-white/80 dark:bg-black/80 rounded-[10px] text-pretty">
+      <div className="w-1/2 h-screen px-8 py-5 flex flex-col justify-center items-center text-pretty">
         <h1 className="text-[--gold] text-3xl font-semibold mb-6">
           SPECIFICATIONS
         </h1>
@@ -447,9 +561,9 @@ export const SteeringSuspension = () => {
   return (
     <div
       id="SteeringSuspension"
-      className="section w-full h-screen flex flex-row items-center"
+      className="section snap-start shrink-0 w-full h-screen flex flex-row items-center container z-[2] mx-auto"
     >
-      <div className="w-1/2 px-8 py-5 bg-white/80 dark:bg-black/80 rounded-[10px] text-pretty">
+      <div className="w-1/2 h-screen px-8 py-5 flex flex-col justify-center items-center text-pretty">
         <h1 className="text-[--gold] text-3xl font-semibold mb-6">
           STEERING AND SUSPENSION
         </h1>
@@ -508,9 +622,10 @@ export const Engine = () => {
   return (
     <div
       id="Engine"
-      className="section w-full h-screen flex flex-row items-center"
+      className="section snap-start shrink-0 w-full h-screen flex flex-row items-center container z-[2] mx-auto"
     >
-      <div className="w-1/2 px-8 py-5 bg-white/80 dark:bg-black/80 rounded-[10px] text-pretty">
+      <div className="w-1/2 "></div>
+      <div className="w-1/2 h-screen px-8 py-5 flex flex-col justify-center items-center text-pretty">
         <h1 className="text-[--gold] text-3xl font-semibold mb-6">ENGINE</h1>
         <ScrollArea className="w-full max-h-[50vh]">
           <ul className="w-full text-sm text-pretty list-disc mb-5">
@@ -587,7 +702,6 @@ export const Engine = () => {
           </ul>
         </ScrollArea>
       </div>
-      <div className="w-1/2 "></div>
     </div>
   );
 };
@@ -595,10 +709,9 @@ export const Wheels = () => {
   return (
     <div
       id="Wheels"
-      className="section w-full h-screen flex flex-row items-center"
+      className="section snap-start shrink-0 w-full h-screen flex flex-row items-center container z-[2] mx-auto"
     >
-      <div className="w-1/2 "></div>
-      <div className="w-1/2 px-8 py-5 bg-white/80 dark:bg-black/80 rounded-[10px] text-pretty">
+      <div className="w-1/2 h-screen px-8 py-5 flex flex-col justify-center items-center text-pretty">
         <h1 className="text-[--gold] text-3xl font-semibold mb-6">WHEELS</h1>
         <ScrollArea className="w-full max-h-[50vh]">
           <ul className="w-full text-sm text-pretty list-disc mb-5">
@@ -637,9 +750,16 @@ export const Wheels = () => {
           </ul>
         </ScrollArea>
       </div>
+      <div className="w-1/2 "></div>
     </div>
   );
 };
+
+type PositionObject = {
+  id: string;
+  position: { x: number; y: number; z: number };
+  rotation: { x: number; y: number; z: number };
+}[];
 
 export const Container3D = () => {
   const carRef = useRef<THREE.Object3D | null>(null);
@@ -647,18 +767,30 @@ export const Container3D = () => {
   const resizeTimeout = useRef<NodeJS.Timeout | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
-  const animationsMapRef = useRef<any | null>();
+  const animationsMapRef = useRef<Map<string, THREE.AnimationAction> | null>(
+    new Map()
+  );
 
   const loadModel = async () => {
     const scene = new THREE.Scene();
     const loader = new GLTFLoader();
-    const renderer = new THREE.WebGLRenderer({ alpha: true });
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     let camera: THREE.PerspectiveCamera | undefined;
 
     // Existing lights
     const light = new THREE.AmbientLight(0xffffff, 3); // Lower ambient light intensity for more contrast
     const topLight = new THREE.DirectionalLight(0xffffff, 1.2);
     topLight.position.set(500, 500, 500);
+
+    // Spot Light
+    const spotLight = new THREE.SpotLight(0xffffff, 10);
+    spotLight.position.set(100, 1000, 100);
+    spotLight.castShadow = true;
+    spotLight.shadow.mapSize.width = 1024;
+    spotLight.shadow.mapSize.height = 1024;
+    spotLight.shadow.camera.near = 500;
+    spotLight.shadow.camera.far = 4000;
+    spotLight.shadow.camera.fov = 30;
 
     // Additional lighting for realism
     const keyLight = new THREE.DirectionalLight(0xffffff, 0.8); // Main light source, acts like sunlight
@@ -684,7 +816,7 @@ export const Container3D = () => {
     ).matches;
 
     // Positions Object
-    const positionObject = [
+    const positionObject: PositionObject = [
       {
         id: "Power",
         position: { x: 0.2, y: -0.7, z: 8 },
@@ -692,23 +824,23 @@ export const Container3D = () => {
       },
       {
         id: "Overview",
-        position: { x: 0, y: -0.7, z: 11 },
+        position: { x: -0.7, y: -0.67, z: 12 },
         rotation: { x: 0, y: 0, z: 0 },
       },
       {
         id: "Design",
-        position: { x: 2.7, y: 0, z: 0 },
-        rotation: { x: 0, y: 1, z: 0 },
+        position: { x: 0, y: -0.7, z: 14 },
+        rotation: { x: 0.3, y: 0, z: 0 },
       },
       {
         id: "Specifications",
-        position: { x: 1, y: -1, z: 0 },
-        rotation: { x: 0, y: -1, z: 0 },
+        position: { x: 0.1, y: -0.6, z: 10 },
+        rotation: { x: 0, y: -0.3, z: 0 },
       },
       {
         id: "SteeringSuspension",
-        position: { x: 1, y: -1, z: 0 },
-        rotation: { x: 0, y: -1, z: 0 },
+        position: { x: 0.8, y: -0.7, z: 13 },
+        rotation: { x: 0, y: -2.4, z: 0 },
       },
       {
         id: "Engine",
@@ -717,11 +849,11 @@ export const Container3D = () => {
       },
       {
         id: "Wheels",
-        position: { x: 1, y: -1, z: 0 },
-        rotation: { x: 0, y: -1, z: 0 },
+        position: { x: 1, y: -0.6, z: 12 },
+        rotation: { x: 0, y: -3, z: 0 },
       },
     ];
-    const positionObject_MD_Portrait = [
+    const positionObject_MD_Portrait: PositionObject = [
       {
         id: "Power",
         position: { x: 1.5, y: 3, z: 0 },
@@ -758,7 +890,7 @@ export const Container3D = () => {
         rotation: { x: 0, y: -1, z: 0 },
       },
     ];
-    const positionObject_MD = [
+    const positionObject_MD: PositionObject = [
       {
         id: "Power",
         position: { x: 1.5, y: 3, z: 0 },
@@ -795,7 +927,7 @@ export const Container3D = () => {
         rotation: { x: 0, y: -1, z: 0 },
       },
     ];
-    const positionObject_SM = [
+    const positionObject_SM: PositionObject = [
       {
         id: "Power",
         position: { x: 0, y: -2, z: 0 },
@@ -884,6 +1016,7 @@ export const Container3D = () => {
 
     if (camera === undefined) return;
     renderer.domElement.style.zIndex = "-1";
+    renderer.shadowMap.enabled = true;
     renderer.setSize(window.innerWidth, window.innerHeight);
     const element = document.getElementById("container3D");
 
@@ -894,13 +1027,20 @@ export const Container3D = () => {
     }
 
     rendererRef.current = renderer;
-    scene.add(light, topLight, keyLight, fillLight, backLight);
+    scene.add(light, topLight, spotLight, keyLight, fillLight, backLight);
     topLight.position.set(500, 500, 500);
 
     loader.load(
       `${baseurl}asset/lamborghini_centenario_lp-770_interior_sdc.glb`,
       (gltf) => {
-        carRef.current = gltf.scene;
+        const model = gltf.scene;
+        model.traverse((node) => {
+          if ((node as THREE.Mesh).isMesh) {
+            (node as THREE.Mesh).castShadow = true;
+          }
+        });
+        carRef.current = model;
+
         scene.add(carRef.current);
 
         mixerRef.current = new THREE.AnimationMixer(carRef.current);
@@ -909,7 +1049,7 @@ export const Container3D = () => {
         // Store animations by name for later access
         gltf.animations.forEach((clip) => {
           const action = mixerRef.current!.clipAction(clip);
-          animationsMapRef.current.set(clip.name, action);
+          animationsMapRef.current?.set(clip.name, action);
         });
 
         modelMove();
@@ -976,8 +1116,11 @@ export const Container3D = () => {
         });
 
         // Example: play a specific animation clip based on section ID
-        if (currentSection && currentSection === "Overview") {
-          const action = animationsMapRef.current.get("Animation");
+        if (
+          (currentSection && currentSection === "Design") ||
+          (currentSection && currentSection === "SteeringSuspension")
+        ) {
+          const action = animationsMapRef.current?.get("Animation");
           if (action) {
             action.reset();
             action.setLoop(THREE.LoopOnce, 0); // Play once, no looping
@@ -985,12 +1128,11 @@ export const Container3D = () => {
             action.play();
           }
         } else {
-          const action = animationsMapRef.current.get("Animation");
+          const action = animationsMapRef.current?.get("Animation");
           if (action) action.reset().stop();
         }
       }
     };
-    modelMove();
 
     // Throttled scroll handler
     const handleScroll = () => {
@@ -999,7 +1141,13 @@ export const Container3D = () => {
       });
     };
 
-    window.addEventListener("scroll", handleScroll);
+    const container = document.getElementById("container");
+    if (!container) {
+      console.log("Not Snap");
+    }
+    container?.addEventListener("scroll", handleScroll);
+
+    console.log("Snap");
 
     // Debounced resize handler
     const handleResize = () => {
@@ -1022,8 +1170,9 @@ export const Container3D = () => {
   };
 
   useEffect(() => {
-    loadModel();
-    window.scrollTo(0, 0);
+    setTimeout(() => {
+      loadModel();
+    }, 1000);
   }, []);
 
   return (

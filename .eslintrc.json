@@ -1,14 +1,7 @@
 {
   "extends": ["next/core-web-vitals", "next/typescript"],
+  "plugins": ["react-hooks"],
   "rules": {
-    "@typescript-eslint/no-require-imports": [
-      "error",
-      {
-        "allow": [
-          "/package.json$",
-          "/tailwind.config.ts$"
-        ]
-      }
-    ]
-  }
+    "react-hooks/exhaustive-deps": 0
+    }
 }
