@@ -30,12 +30,12 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { div } from "three/webgpu";
 
 export default function HomeLanding() {
   const [count, setCount] = useState(1);
   const intervalTime = 10000 / 100;
 
+  // Loading percentage
   useEffect(() => {
     const interval = setInterval(() => {
       setCount((prevCount) => {
@@ -1135,16 +1135,16 @@ export const Container3D = () => {
     };
 
     // Throttled scroll handler
+    const container = document.getElementById("container");
+    if (!container) {
+      console.log("Not Snap");
+    }
     const handleScroll = () => {
       requestAnimationFrame(() => {
         modelMove();
       });
     };
 
-    const container = document.getElementById("container");
-    if (!container) {
-      console.log("Not Snap");
-    }
     container?.addEventListener("scroll", handleScroll);
 
     console.log("Snap");
