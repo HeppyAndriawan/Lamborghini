@@ -124,14 +124,14 @@ export const Navigation = () => {
   }, []);
 
   // Oder Data Data
-  type OrderData = {
-    name: string;
-    description: string;
-    total: number;
-    payment: string;
-  }[];
+  // type OrderData = {
+  //   name: string;
+  //   description: string;
+  //   total: number;
+  //   payment: string;
+  // }[];
 
-  const [orderData, setorderData] = useState<OrderData>([]);
+  // const [orderData, setorderData] = useState<OrderData>([]);
 
   // Data Mobile Navigation
   const mobileNavigation = [
@@ -299,7 +299,7 @@ export const Navigation = () => {
               <circle cx="9" cy="20" r="2" />
             </svg>
           }
-          dataList={orderData}
+          dataList={[]} // replace with [orderData]
           textBTNcolor="white"
           space={false}
         />
