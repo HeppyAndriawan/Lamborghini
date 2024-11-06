@@ -46,7 +46,7 @@ export default function HomeLanding() {
 
   // Loading percentage
   useEffect(() => {
-    if (baseurl === "/") {
+    if (baseurl === "./") {
       const interval = setInterval(() => {
         setCount((prevCount) => {
           if (prevCount === 100) {
