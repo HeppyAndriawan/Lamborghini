@@ -35,25 +35,49 @@ import {
 import AOS from "aos";
 import "aos/dist/aos.css";
 
+interface ServiceWorkerMessageData {
+  type: string;
+  progress?: number;
+}
 export default function HomeLanding() {
   const [count, setCount] = useState(1);
   const intervalTime = 10000 / 100;
 
   // Loading percentage
   useEffect(() => {
-    const interval = setInterval(() => {
-      setCount((prevCount) => {
-        if (prevCount === 100) {
-          clearInterval(interval);
-          return prevCount;
-        }
-        return prevCount + 1;
-      });
-    }, intervalTime);
+    if (baseurl === "/") {
+      const interval = setInterval(() => {
+        setCount((prevCount) => {
+          if (prevCount === 100) {
+            clearInterval(interval);
+            return prevCount;
+          }
+          return prevCount + 1;
+        });
+      }, intervalTime);
 
-    // Clean up the interval on component unmount
-    return () => clearInterval(interval);
-  }, []);
+      // Clean up the interval on component unmount
+      return () => clearInterval(interval);
+    }
+
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.ready.then(() => {
+        navigator.serviceWorker.addEventListener(
+          "message",
+          (event: MessageEvent<ServiceWorkerMessageData>) => {
+            // Check that event.data is the correct type
+            if (
+              event.data &&
+              event.data.type === "CACHE_PROGRESS" &&
+              typeof event.data.progress === "number"
+            ) {
+              setCount(event.data.progress);
+            }
+          }
+        );
+      });
+    }
+  }, [baseurl]);
 
   // Show Hide
   const [isLoadOver, setisLoadOver] = useState<boolean>(false);
@@ -462,15 +486,24 @@ export const CarBlockContainer = () => {
         ></div>
       </div>
       <div className="w-full h-screen flex flex-row">
-        <div data-aos="fade-right" className="w-1/2 bg-white dark:bg-[#181818]"></div>
+        <div
+          data-aos="fade-right"
+          className="w-1/2 bg-white dark:bg-[#181818]"
+        ></div>
         <div className="w-1/2"></div>
       </div>
       <div className="w-full h-screen flex flex-row">
         <div className="w-1/2"></div>
-        <div data-aos="fade-left" className="w-1/2 bg-white dark:bg-[#181818]"></div>
+        <div
+          data-aos="fade-left"
+          className="w-1/2 bg-white dark:bg-[#181818]"
+        ></div>
       </div>
       <div className="w-full h-screen flex flex-row">
-        <div data-aos="fade-right" className="w-1/2 bg-white dark:bg-[#181818]"></div>
+        <div
+          data-aos="fade-right"
+          className="w-1/2 bg-white dark:bg-[#181818]"
+        ></div>
         <div className="w-1/2"></div>
       </div>
       <div data-aos="fade-left" className="w-full h-screen flex flex-row">
@@ -478,7 +511,10 @@ export const CarBlockContainer = () => {
         <div className="w-1/2 bg-white dark:bg-[#181818]"></div>
       </div>
       <div className="w-full h-screen flex flex-row">
-        <div  data-aos="fade-right" className="w-1/2 bg-white dark:bg-[#181818]"></div>
+        <div
+          data-aos="fade-right"
+          className="w-1/2 bg-white dark:bg-[#181818]"
+        ></div>
         <div className="w-1/2"></div>
       </div>
     </div>
@@ -549,7 +585,10 @@ export const Design = () => {
       id="Design"
       className="section snap-start shrink-0 w-full h-screen flex flex-row justify-center items-center container z-[2] mx-auto"
     >
-      <div data-aos="fade-right" className="w-1/2 h-fit px-8 py-5 text-pretty flex items-center">
+      <div
+        data-aos="fade-right"
+        className="w-1/2 h-fit px-8 py-5 text-pretty flex items-center"
+      >
         <div className="max-w-[80%] h-fit ">
           <h1 className="text-[--gold] text-3xl font-semibold mb-6">DESIGN</h1>
           <p className="text-black dark:text-white mb-5">
@@ -579,7 +618,10 @@ export const Specifications = () => {
       className="section snap-start shrink-0 w-full h-screen flex flex-row items-center container z-[2] mx-auto"
     >
       <div className="w-1/2 "></div>
-      <div data-aos="fade-left" className="w-1/2 h-screen px-8 py-5 flex flex-col justify-center items-center text-pretty">
+      <div
+        data-aos="fade-left"
+        className="w-1/2 h-screen px-8 py-5 flex flex-col justify-center items-center text-pretty"
+      >
         <div className="max-w-[80%] h-fit ">
           <h1 className="text-[--gold] text-3xl font-semibold mb-6">
             SPECIFICATIONS
@@ -642,7 +684,10 @@ export const SteeringSuspension = () => {
       id="SteeringSuspension"
       className="section snap-start shrink-0 w-full h-screen flex flex-row items-center container z-[2] mx-auto"
     >
-      <div data-aos="fade-right" className="w-1/2 h-screen px-8 py-5 flex flex-col justify-center items-center text-pretty">
+      <div
+        data-aos="fade-right"
+        className="w-1/2 h-screen px-8 py-5 flex flex-col justify-center items-center text-pretty"
+      >
         <div className="max-w-[80%] h-fit ">
           <h1 className="text-[--gold] text-3xl font-semibold mb-6">
             STEERING AND SUSPENSION
@@ -706,7 +751,10 @@ export const Engine = () => {
       className="section snap-start shrink-0 w-full h-screen flex flex-row items-center container z-[2] mx-auto"
     >
       <div className="w-1/2 "></div>
-      <div data-aos="fade-left" className="w-1/2 h-screen px-8 py-5 flex flex-col justify-center items-center text-pretty">
+      <div
+        data-aos="fade-left"
+        className="w-1/2 h-screen px-8 py-5 flex flex-col justify-center items-center text-pretty"
+      >
         <div className="max-w-[80%] h-fit ">
           <h1 className="text-[--gold] text-3xl font-semibold mb-6">ENGINE</h1>
           <ScrollArea className="w-full max-h-[50vh]">
@@ -796,7 +844,10 @@ export const Wheels = () => {
       id="Wheels"
       className="section snap-end shrink-0 w-full h-screen flex flex-row items-center container z-[2] mx-auto"
     >
-      <div data-aos="fade-right" className="w-1/2 h-screen px-8 py-5 flex flex-col justify-center items-center text-pretty">
+      <div
+        data-aos="fade-right"
+        className="w-1/2 h-screen px-8 py-5 flex flex-col justify-center items-center text-pretty"
+      >
         <div className="max-w-[80%] h-fit ">
           <h1 className="text-[--gold] text-3xl font-semibold mb-6">WHEELS</h1>
           <ScrollArea className="w-full max-h-[50vh]">
