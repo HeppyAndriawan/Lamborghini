@@ -2,6 +2,9 @@
   "extends": ["next/core-web-vitals", "next/typescript"],
   "plugins": ["react-hooks"],
   "rules": {
-    "react-hooks/exhaustive-deps": 0
+    "react-hooks/exhaustive-deps": 0,
+    "@typescript-eslint/no-var-requires": 0
+    
     }
+    
 }

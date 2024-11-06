@@ -61,15 +61,32 @@ export default function HomeLanding() {
       return () => clearInterval(interval);
     }
 
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.ready.then(() => {
-        navigator.serviceWorker.addEventListener("message", (event: MessageEvent<ServiceWorkerMessageData>) => {
-          if (event.data && event.data.type === "CACHE_PROGRESS" && typeof event.data.progress === "number") {
-            setCount(event.data.progress);
-          }
-        });
-      });
-    }
+    // if ("serviceWorker" in navigator) {
+    //   navigator.serviceWorker.ready.then(() => {
+    //     const updateProgress = (
+    //       event: MessageEvent<ServiceWorkerMessageData>
+    //     ) => {
+    //       if (
+    //         event.data &&
+    //         event.data.type === "CACHE_PROGRESS" &&
+    //         typeof event.data.progress === "number"
+    //       ) {
+    //         console.log("Received progress update:", event.data.progress);
+    //         setCount(event.data.progress);
+    //       }
+    //     };
+
+    //     // Listen for messages from the service worker
+    //     navigator.serviceWorker.addEventListener("message", updateProgress);
+
+    //     // Clean up the event listener on component unmount
+    //     return () =>
+    //       navigator.serviceWorker.removeEventListener(
+    //         "message",
+    //         updateProgress
+    //       );
+    //   });
+    // }
   }, [baseurl]);
 
   // Show Hide
