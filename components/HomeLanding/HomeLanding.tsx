@@ -35,10 +35,10 @@ import {
 import AOS from "aos";
 import "aos/dist/aos.css";
 
-interface ServiceWorkerMessageData {
-  type: string;
-  progress?: number;
-}
+// interface ServiceWorkerMessageData {
+//   type: string;
+//   progress?: number;
+// }
 
 export default function HomeLanding() {
   const [count, setCount] = useState(1);
