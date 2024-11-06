@@ -1,80 +1,96 @@
-const isGithubActions = process.env.GITHUB_ACTIONS;
-export const baseurl = isGithubActions
-  ? "./"
-  : process.env.NODE_ENV === "development"
-  ? "/"
-  : "./";
+// public/service-worker.js
 
-const CACHE_NAME = "lamborghini-assets-cache";
-const ASSET_FOLDER = baseurl === "/" ? "/asset" : "/Lamborghini/asset";
-let totalAssets = 0;
-let cachedAssets = 0;
+const CACHE_NAME = "asset-cache-v1";
+const ASSET_FOLDER = "/Lamborghini/asset";
+const ASSETS = [
+  `${ASSET_FOLDER}/lamborghini_centenario_lp-770_interior_sdc.glb`,
+  `${ASSET_FOLDER}/logo.svg`,
+  // Add other assets here
+];
 
+// Install and cache assets
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      // Fetch the asset list and cache them
-      return fetch("/asset-list.json")
-        .then((response) => response.json())
-        .then((assets) => {
-          const assetUrls = assets.filter((url) =>
-            url.startsWith(ASSET_FOLDER)
-          );
-          totalAssets = assetUrls.length;
-
-          return Promise.all(
-            assetUrls.map((url) =>
-              cache.add(url).then(() => {
-                cachedAssets += 1;
-                const progress = Math.round((cachedAssets / totalAssets) * 100);
-
-                // Send progress update to all clients
-                self.clients.matchAll().then((clients) => {
-                  clients.forEach((client) => {
-                    client.postMessage({
-                      type: "CACHE_PROGRESS",
-                      progress: progress,
-                    });
-                  });
-                });
-              })
-            )
-          );
-        })
-        .catch((error) => {
-          console.error("Failed to fetch asset list:", error);
-        });
+      // console.log("[Service Worker] Caching assets during install...");
+      return cache.addAll(ASSETS);
     })
   );
+  self.skipWaiting();
 });
 
-self.addEventListener("fetch", (event) => {
-  // Only handle requests for assets in the asset folder
-  if (event.request.url.includes(ASSET_FOLDER)) {
-    event.respondWith(
-      caches.match(event.request).then((cachedResponse) => {
-        // Return cached response if available
-        if (cachedResponse) {
-          return cachedResponse;
-        }
+// Activate the service worker and immediately check the cache status
+self.addEventListener("activate", (event) => {
+  // console.log("[Service Worker] Activating...");
+  event.waitUntil(self.clients.claim());
+  broadcastProgress(); // Send progress on activation, e.g., after a refresh
+});
 
-        // Fetch from network and cache it
-        return fetch(event.request)
-          .then((networkResponse) => {
-            // Only cache successful responses
-            if (networkResponse && networkResponse.status === 200) {
-              caches.open(CACHE_NAME).then((cache) => {
-                cache.put(event.request, networkResponse.clone());
-              });
-            }
-            return networkResponse; // Return the network response
-          })
-          .catch((error) => {
-            console.error("Fetching failed:", error);
-            // Handle fetch failure, return fallback content if necessary
-            return caches.match("/offline.html"); // Optional fallback for offline usage
-          });
+// Handle fetch requests and update progress
+self.addEventListener("fetch", (event) => {
+  const requestUrl = new URL(event.request.url);
+  if (ASSETS.includes(requestUrl.pathname)) {
+    event.respondWith(
+      caches.open(CACHE_NAME).then((cache) => {
+        return cache.match(event.request).then((cachedResponse) => {
+          if (cachedResponse) {
+            // console.log(
+            //   `[Service Worker] Serving cached: ${requestUrl.pathname}`
+            // );
+            broadcastProgress();
+            return cachedResponse;
+          } else {
+            // console.log(
+            //   `[Service Worker] Fetching and caching: ${requestUrl.pathname}`
+            // );
+            return fetch(event.request).then((networkResponse) => {
+              cache.put(event.request, networkResponse.clone());
+              broadcastProgress();
+              return networkResponse;
+            });
+          }
+        });
       })
     );
   }
 });
+
+// Listen for messages from clients requesting cache status
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "CHECK_CACHE_STATUS") {
+    // console.log("[Service Worker] Received cache status check request");
+    broadcastProgress(); // Send current cache status to the requesting client
+  }
+});
+
+function broadcastProgress() {
+  caches.open(CACHE_NAME).then((cache) => {
+    cache.keys().then((cachedRequests) => {
+      const cachedCount = cachedRequests.length;
+      const totalAssets = ASSETS.length;
+      const progress = Math.floor((cachedCount / totalAssets) * 100);
+
+      if (cachedCount === totalAssets) {
+        // All assets are cached, so broadcast CACHE_COMPLETE
+        self.clients.matchAll().then((clients) => {
+          clients.forEach((client) => {
+            client.postMessage({
+              type: "CACHE_COMPLETE",
+              progress: 100,
+            });
+          });
+        });
+      } else {
+        // Broadcast the current progress
+        self.clients.matchAll().then((clients) => {
+          clients.forEach((client) => {
+            client.postMessage({
+              type: "CACHE_PROGRESS",
+              progress: progress,
+            });
+          });
+        });
+      }
+    });
+  });
+}

@@ -13,13 +13,6 @@ export default function Providers({ children }: ProvidersProps) {
     $("html, body").animate({ scrollTop: 0 }, "slow");
   }, []);
 
-  // useEffect(() => {
-  //   if ('serviceWorker' in navigator) {
-  //     navigator.serviceWorker
-  //       .register('/sw.js', { scope: '/' })
-  //       .then((registration) => console.log('scope is: ', registration.scope));
-  //   }
-  // }, []);
   return (
     <div className="w-full relative overflow-hidden">
       <ThemeUtility>

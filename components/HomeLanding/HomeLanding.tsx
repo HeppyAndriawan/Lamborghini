@@ -35,59 +35,48 @@ import {
 import AOS from "aos";
 import "aos/dist/aos.css";
 
-// interface ServiceWorkerMessageData {
-//   type: string;
-//   progress?: number;
-// }
-
 export default function HomeLanding() {
   const [count, setCount] = useState(1);
-  const intervalTime = 10000 / 100;
 
-  // Loading percentage
+  // Register Service worker
   useEffect(() => {
-    if (baseurl === "./") {
-      const interval = setInterval(() => {
-        setCount((prevCount) => {
-          if (prevCount === 100) {
-            clearInterval(interval);
-            return prevCount;
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .register("/sw.js", { scope: baseurl === "/" ? "/" : "/Lamborghini/" })
+        .then((registration) => {
+          // Check cache status after registration
+          if (registration.active) {
+            registration.active.postMessage({ type: "CHECK_CACHE_STATUS" });
           }
-          return prevCount + 1;
+        })
+        .catch((error) => {
+          console.error("Service Worker registration failed:", error);
         });
-      }, intervalTime);
 
-      // Clean up the interval on component unmount
-      return () => clearInterval(interval);
+      // Listen for messages from the service worker
+      function handleServiceWorkerMessage(event: MessageEvent) {
+        if (event.data && event.data.type === "CACHE_PROGRESS") {
+          setCount(event.data.progress);
+        } else if (event.data && event.data.type === "CACHE_COMPLETE") {
+          setCount(100);
+        }
+      }
+
+      // Add the event listener for service worker messages
+      navigator.serviceWorker.addEventListener(
+        "message",
+        handleServiceWorkerMessage
+      );
+
+      // On component unmount, remove the event listener
+      return () => {
+        navigator.serviceWorker.removeEventListener(
+          "message",
+          handleServiceWorkerMessage
+        );
+      };
     }
-
-    // if ("serviceWorker" in navigator) {
-    //   navigator.serviceWorker.ready.then(() => {
-    //     const updateProgress = (
-    //       event: MessageEvent<ServiceWorkerMessageData>
-    //     ) => {
-    //       if (
-    //         event.data &&
-    //         event.data.type === "CACHE_PROGRESS" &&
-    //         typeof event.data.progress === "number"
-    //       ) {
-    //         console.log("Received progress update:", event.data.progress);
-    //         setCount(event.data.progress);
-    //       }
-    //     };
-
-    //     // Listen for messages from the service worker
-    //     navigator.serviceWorker.addEventListener("message", updateProgress);
-
-    //     // Clean up the event listener on component unmount
-    //     return () =>
-    //       navigator.serviceWorker.removeEventListener(
-    //         "message",
-    //         updateProgress
-    //       );
-    //   });
-    // }
-  }, [baseurl]);
+  }, []);
 
   // Show Hide
   const [isLoadOver, setisLoadOver] = useState<boolean>(false);
