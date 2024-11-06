@@ -39,6 +39,7 @@ interface ServiceWorkerMessageData {
   type: string;
   progress?: number;
 }
+
 export default function HomeLanding() {
   const [count, setCount] = useState(1);
   const intervalTime = 10000 / 100;
@@ -62,19 +63,11 @@ export default function HomeLanding() {
 
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.ready.then(() => {
-        navigator.serviceWorker.addEventListener(
-          "message",
-          (event: MessageEvent<ServiceWorkerMessageData>) => {
-            // Check that event.data is the correct type
-            if (
-              event.data &&
-              event.data.type === "CACHE_PROGRESS" &&
-              typeof event.data.progress === "number"
-            ) {
-              setCount(event.data.progress);
-            }
+        navigator.serviceWorker.addEventListener("message", (event: MessageEvent<ServiceWorkerMessageData>) => {
+          if (event.data && event.data.type === "CACHE_PROGRESS" && typeof event.data.progress === "number") {
+            setCount(event.data.progress);
           }
-        );
+        });
       });
     }
   }, [baseurl]);
