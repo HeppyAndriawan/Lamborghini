@@ -7,9 +7,10 @@ import { baseurl } from "@/tool/BaseURL/BaseURL";
 import { useRouter } from "next/navigation";
 import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-import gsap from "gsap";
+import { gsap } from "gsap";
 import Image from "next/image";
 import $ from "jquery";
+import { useCartStore, ZustandProps } from "./store/useHomeLanding";
 
 import {
   AlertDialog,
@@ -30,6 +31,9 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 export default function HomeLanding() {
   const [count, setCount] = useState(1);
@@ -70,6 +74,22 @@ export default function HomeLanding() {
       }, 2000);
     }
   }, [count]);
+
+  // Aos Animation
+  useEffect(() => {
+    if (!isLoadOver) return;
+
+    AOS.init({
+      offset: 120, // Reduced offset for smoother snapping
+      duration: 800, // Adjust duration as needed
+      easing: "ease-in-out",
+      delay: 300, // Shorter delay to avoid snap interference
+      once: false, // Ensures animation runs only once
+    });
+
+    const container = document.getElementById("container");
+    container?.addEventListener("scroll", aosObserver);
+  }, [isLoadOver]);
 
   return (
     <div
@@ -124,14 +144,8 @@ export const Navigation = () => {
   }, []);
 
   // Oder Data Data
-  // type OrderData = {
-  //   name: string;
-  //   description: string;
-  //   total: number;
-  //   payment: string;
-  // }[];
 
-  // const [orderData, setorderData] = useState<OrderData>([]);
+  const { data }: ZustandProps = useCartStore();
 
   // Data Mobile Navigation
   const mobileNavigation = [
@@ -290,7 +304,7 @@ export const Navigation = () => {
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="lucide lucide-baggage-claim w-[20px] h-[20px]"
+              className="lucide lucide-baggage-claim w-[20px] h-[20px] stroke-gray-600 dark:stroke-white"
             >
               <path d="M22 18H6a2 2 0 0 1-2-2V7a2 2 0 0 0-2-2" />
               <path d="M17 14V4a2 2 0 0 0-2-2h-1a2 2 0 0 0-2 2v10" />
@@ -299,7 +313,7 @@ export const Navigation = () => {
               <circle cx="9" cy="20" r="2" />
             </svg>
           }
-          dataList={[]} // replace with [orderData]
+          dataList={data} // replace with [orderData]
           textBTNcolor="white"
           space={false}
         />
@@ -358,6 +372,59 @@ export const Navigation = () => {
   );
 };
 
+type MobileNavigationProps = {
+  title: string | JSX.Element;
+  dataMenu: {
+    title: string;
+    href: string;
+  }[];
+  extraButton: JSX.Element;
+};
+export const MobileNavigation = ({
+  title,
+  dataMenu,
+  extraButton,
+}: MobileNavigationProps) => {
+  const router = useRouter();
+  const [open, setOpen] = React.useState(false);
+
+  return (
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger>{title}</SheetTrigger>
+      <SheetContent className="w-[100vw] m-0">
+        <SheetHeader>
+          <SheetTitle>Menu</SheetTitle>
+          <SheetDescription />
+        </SheetHeader>
+        <div className="w-full h-fit flex flex-col  items-center">
+          <ul className="w-full my-6">
+            {dataMenu.map((list, index) => (
+              <li
+                key={index + list.title}
+                className="w-full text-lg hover:text-gray-600 font-bold border-b p-3"
+                onClick={() => {
+                  setOpen(false);
+
+                  setTimeout(() => {
+                    router.push(list.href);
+                  }, 1000);
+                }}
+              >
+                {list.title}
+              </li>
+            ))}
+          </ul>
+          {extraButton && (
+            <div className="w-full absolute bottom-2 left-0 right-0 p-6">
+              {extraButton}
+            </div>
+          )}
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+};
+
 type Loading = {
   number: number;
 };
@@ -389,26 +456,29 @@ export const CarBlockContainer = () => {
       <div className="w-full h-screen"></div>
       <div className="w-full h-screen flex flex-row">
         <div className="w-1/2"></div>
-        <div className="w-1/2 bg-white/90 dark:bg-[#181818]/90"></div>
+        <div
+          data-aos="fade-left"
+          className="w-1/2 bg-white dark:bg-[#181818]"
+        ></div>
       </div>
       <div className="w-full h-screen flex flex-row">
-        <div className="w-1/2 bg-white/90 dark:bg-[#181818]/90"></div>
+        <div data-aos="fade-right" className="w-1/2 bg-white dark:bg-[#181818]"></div>
         <div className="w-1/2"></div>
       </div>
       <div className="w-full h-screen flex flex-row">
         <div className="w-1/2"></div>
-        <div className="w-1/2 bg-white/90 dark:bg-[#181818]/90"></div>
+        <div data-aos="fade-left" className="w-1/2 bg-white dark:bg-[#181818]"></div>
       </div>
       <div className="w-full h-screen flex flex-row">
-        <div className="w-1/2 bg-white/90 dark:bg-[#181818]/90"></div>
+        <div data-aos="fade-right" className="w-1/2 bg-white dark:bg-[#181818]"></div>
         <div className="w-1/2"></div>
       </div>
-      <div className="w-full h-screen flex flex-row">
+      <div data-aos="fade-left" className="w-full h-screen flex flex-row">
         <div className="w-1/2"></div>
-        <div className="w-1/2 bg-white/90 dark:bg-[#181818]/90"></div>
+        <div className="w-1/2 bg-white dark:bg-[#181818]"></div>
       </div>
       <div className="w-full h-screen flex flex-row">
-        <div className="w-1/2 bg-white/90 dark:bg-[#181818]/90"></div>
+        <div  data-aos="fade-right" className="w-1/2 bg-white dark:bg-[#181818]"></div>
         <div className="w-1/2"></div>
       </div>
     </div>
@@ -444,6 +514,7 @@ export const Power = () => {
     </div>
   );
 };
+
 export const Overview = () => {
   return (
     <div
@@ -451,12 +522,15 @@ export const Overview = () => {
       className="section snap-start shrink-0 w-full h-screen flex flex-row items-center container z-[2] mx-auto"
     >
       <div className="w-1/2 "></div>
-      <div className="w-1/2 h-screen flex justify-center items-center text-pretty">
-        <div className="px-8 py-5">
+      <div
+        className="w-1/2 h-screen flex justify-center items-center text-pretty"
+        data-aos="fade-left"
+      >
+        <div className="max-w-[80%] h-fit px-8 py-5">
           <h1 className="text-[--gold] text-3xl font-semibold mb-6">
             OVERVIEW
           </h1>
-          <p className="text-black dark:text-white text-xl mb-5">
+          <p className="text-black dark:text-white mb-5">
             The Lamborghini Centenario exemplifies the innovative design and
             engineering skills of the House of the Raging Bull. The finest
             possible tribute to our founder Ferruccio Lamborghini on the
@@ -468,28 +542,31 @@ export const Overview = () => {
     </div>
   );
 };
+
 export const Design = () => {
   return (
     <div
       id="Design"
       className="section snap-start shrink-0 w-full h-screen flex flex-row justify-center items-center container z-[2] mx-auto"
     >
-      <div className="w-1/2 px-8 py-5 text-pretty ">
-        <h1 className="text-[--gold] text-3xl font-semibold mb-6">DESIGN</h1>
-        <p className="text-black dark:text-white text-xl mb-5">
-          Here are the technical characteristics of the Lamborghini Centenario:
-          equipped with a 770 CV aspirated V12 engine springing from 0 to 100
-          km/h in 2.8 seconds, the newly-born Lamborghini car has been produced
-          in a limited edition, for a total of 40 models: 20 Coupés and 20
-          Roadsters will be delivered to Lamborghini collectors and fans
-          starting from 2017.
-        </p>
-        <p className="text-black dark:text-white text-xl mb-5">
-          The Centenario has been conceived with the purpose of exploring new
-          technological and design opportunities, to look at the future through
-          the lens of innovation. One of the most exclusive (and sought-after)
-          cars in the whole world.
-        </p>
+      <div data-aos="fade-right" className="w-1/2 h-fit px-8 py-5 text-pretty flex items-center">
+        <div className="max-w-[80%] h-fit ">
+          <h1 className="text-[--gold] text-3xl font-semibold mb-6">DESIGN</h1>
+          <p className="text-black dark:text-white mb-5">
+            Here are the technical characteristics of the Lamborghini
+            Centenario: equipped with a 770 CV aspirated V12 engine springing
+            from 0 to 100 km/h in 2.8 seconds, the newly-born Lamborghini car
+            has been produced in a limited edition, for a total of 40 models: 20
+            Coupés and 20 Roadsters will be delivered to Lamborghini collectors
+            and fans starting from 2017.
+          </p>
+          <p className="text-black dark:text-white mb-5">
+            The Centenario has been conceived with the purpose of exploring new
+            technological and design opportunities, to look at the future
+            through the lens of innovation. One of the most exclusive (and
+            sought-after) cars in the whole world.
+          </p>
+        </div>
       </div>
       <div className="w-1/2 "></div>
     </div>
@@ -502,57 +579,59 @@ export const Specifications = () => {
       className="section snap-start shrink-0 w-full h-screen flex flex-row items-center container z-[2] mx-auto"
     >
       <div className="w-1/2 "></div>
-      <div className="w-1/2 h-screen px-8 py-5 flex flex-col justify-center items-center text-pretty">
-        <h1 className="text-[--gold] text-3xl font-semibold mb-6">
-          SPECIFICATIONS
-        </h1>
-        <ScrollArea className="w-full max-h-[50vh]">
-          <ul className="w-full text-sm text-pretty list-disc mb-5">
-            <li className="w-full flex flex-row justify-between mb-7">
-              <span className="w-1/2 text-black dark:text-white font-semibold">
-                DISPLACEMENT
-              </span>
-              <span className="w-1/2 text-black dark:text-white">
-                6.498 cm³ (396.5 cu in)
-              </span>
-            </li>
-            <li className="w-full flex flex-row justify-between mb-7">
-              <span className="w-1/2 text-black dark:text-white font-semibold">
-                MAX. POWER
-              </span>
-              <span className="w-1/2 text-black dark:text-white">
-                770 CV (566 kW) @ 8.500 rpm
-              </span>
-            </li>
-            <li className="w-full flex flex-row justify-between mb-7">
-              <span className="w-1/2 text-black dark:text-white font-semibold">
-                MAX. SPEED
-              </span>
-              <span className="w-1/2 text-black dark:text-white">{`>350 km/h (217 mph)`}</span>
-            </li>
-            <li className="w-full flex flex-row justify-between mb-7">
-              <span className="w-1/2 text-black dark:text-white font-semibold">
-                ACCELERATION 0-100 KM/H (0-62 MPH)
-              </span>
-              <span className="w-1/2 text-black dark:text-white">2,8 s</span>
-            </li>
-            <li className="w-full flex flex-row justify-between mb-7">
-              <span className="w-1/2 text-black dark:text-white font-semibold">
-                NUMBER OF CYLINDERS
-              </span>
-              <span className="w-1/2 text-black dark:text-white">12</span>
-            </li>
-            <li className="w-full flex flex-row justify-between mb-7">
-              <span className="w-1/2 text-black dark:text-white font-semibold">
-                TRANSMISSION
-              </span>
-              <span className="w-1/2 text-black dark:text-white">
-                Electronically controlled all-wheel drive system (Haldex gen.
-                IV) with rear mechanical self-locking differential
-              </span>
-            </li>
-          </ul>
-        </ScrollArea>
+      <div data-aos="fade-left" className="w-1/2 h-screen px-8 py-5 flex flex-col justify-center items-center text-pretty">
+        <div className="max-w-[80%] h-fit ">
+          <h1 className="text-[--gold] text-3xl font-semibold mb-6">
+            SPECIFICATIONS
+          </h1>
+          <ScrollArea className="w-full max-h-[50vh]">
+            <ul className="w-full text-sm text-pretty list-disc mb-5">
+              <li className="w-full flex flex-row justify-between mb-4">
+                <span className="w-1/2 text-black dark:text-white font-semibold">
+                  DISPLACEMENT
+                </span>
+                <span className="w-1/2 text-black dark:text-white">
+                  6.498 cm³ (396.5 cu in)
+                </span>
+              </li>
+              <li className="w-full flex flex-row justify-between mb-4">
+                <span className="w-1/2 text-black dark:text-white font-semibold">
+                  MAX. POWER
+                </span>
+                <span className="w-1/2 text-black dark:text-white">
+                  770 CV (566 kW) @ 8.500 rpm
+                </span>
+              </li>
+              <li className="w-full flex flex-row justify-between mb-4">
+                <span className="w-1/2 text-black dark:text-white font-semibold">
+                  MAX. SPEED
+                </span>
+                <span className="w-1/2 text-black dark:text-white">{`>350 km/h (217 mph)`}</span>
+              </li>
+              <li className="w-full flex flex-row justify-between mb-4">
+                <span className="w-1/2 text-black dark:text-white font-semibold">
+                  ACCELERATION 0-100 KM/H (0-62 MPH)
+                </span>
+                <span className="w-1/2 text-black dark:text-white">2,8 s</span>
+              </li>
+              <li className="w-full flex flex-row justify-between mb-4">
+                <span className="w-1/2 text-black dark:text-white font-semibold">
+                  NUMBER OF CYLINDERS
+                </span>
+                <span className="w-1/2 text-black dark:text-white">12</span>
+              </li>
+              <li className="w-full flex flex-row justify-between mb-4">
+                <span className="w-1/2 text-black dark:text-white font-semibold">
+                  TRANSMISSION
+                </span>
+                <span className="w-1/2 text-black dark:text-white">
+                  Electronically controlled all-wheel drive system (Haldex gen.
+                  IV) with rear mechanical self-locking differential
+                </span>
+              </li>
+            </ul>
+          </ScrollArea>
+        </div>
       </div>
     </div>
   );
@@ -563,56 +642,58 @@ export const SteeringSuspension = () => {
       id="SteeringSuspension"
       className="section snap-start shrink-0 w-full h-screen flex flex-row items-center container z-[2] mx-auto"
     >
-      <div className="w-1/2 h-screen px-8 py-5 flex flex-col justify-center items-center text-pretty">
-        <h1 className="text-[--gold] text-3xl font-semibold mb-6">
-          STEERING AND SUSPENSION
-        </h1>
-        <ScrollArea className="w-full max-h-[50vh]">
-          <ul className="w-full text-sm text-pretty list-disc mb-5">
-            <li className="w-full flex flex-row justify-between mb-7">
-              <span className="w-[35%] text-black dark:text-white font-semibold">
-                CONTROL SYSTEMS
-              </span>
-              <span className="w-[60%] text-black dark:text-white">
-                Electronic Stability Control (ABS e TCS integrated)
-              </span>
-            </li>
-            <li className="w-full flex flex-row justify-between mb-7">
-              <span className="w-[35%] text-black dark:text-white font-semibold">
-                SUSPENSION TYPE
-              </span>
-              <span className="w-[60%] text-black dark:text-white">
-                Push rod magneto-rheologic active front and rear suspension with
-                horizontal dampers and springs
-              </span>
-            </li>
-            <li className="w-full flex flex-row justify-between mb-7">
-              <span className="w-[35%] text-black dark:text-white font-semibold">
-                SUSPENSION GEOMETRY
-              </span>
-              <span className="w-[60%] text-black dark:text-white">
-                Double wishbone fully independent suspension
-              </span>
-            </li>
-            <li className="w-full flex flex-row justify-between mb-7">
-              <span className="w-[35%] text-black dark:text-white font-semibold">
-                STEERING TYPE
-              </span>
-              <span className="w-[60%] text-black dark:text-white">
-                Hydraulic assisted power steering
-              </span>
-            </li>
-            <li className="w-full flex flex-row justify-between mb-7">
-              <span className="w-[35%] text-black dark:text-white font-semibold">
-                STEERING SYSTEM
-              </span>
-              <span className="w-[60%] text-black dark:text-white">
-                LDS (Lamborghini Dynamic Steering) with variable steering ratio;
-                Lamborghini rear-wheel steering system
-              </span>
-            </li>
-          </ul>
-        </ScrollArea>
+      <div data-aos="fade-right" className="w-1/2 h-screen px-8 py-5 flex flex-col justify-center items-center text-pretty">
+        <div className="max-w-[80%] h-fit ">
+          <h1 className="text-[--gold] text-3xl font-semibold mb-6">
+            STEERING AND SUSPENSION
+          </h1>
+          <ScrollArea className="w-full max-h-[50vh]">
+            <ul className="w-full text-sm text-pretty list-disc mb-5">
+              <li className="w-full flex flex-row justify-between mb-4">
+                <span className="w-[35%] text-black dark:text-white font-semibold">
+                  CONTROL SYSTEMS
+                </span>
+                <span className="w-[60%] text-black dark:text-white">
+                  Electronic Stability Control (ABS e TCS integrated)
+                </span>
+              </li>
+              <li className="w-full flex flex-row justify-between mb-4">
+                <span className="w-[35%] text-black dark:text-white font-semibold">
+                  SUSPENSION TYPE
+                </span>
+                <span className="w-[60%] text-black dark:text-white">
+                  Push rod magneto-rheologic active front and rear suspension
+                  with horizontal dampers and springs
+                </span>
+              </li>
+              <li className="w-full flex flex-row justify-between mb-4">
+                <span className="w-[35%] text-black dark:text-white font-semibold">
+                  SUSPENSION GEOMETRY
+                </span>
+                <span className="w-[60%] text-black dark:text-white">
+                  Double wishbone fully independent suspension
+                </span>
+              </li>
+              <li className="w-full flex flex-row justify-between mb-4">
+                <span className="w-[35%] text-black dark:text-white font-semibold">
+                  STEERING TYPE
+                </span>
+                <span className="w-[60%] text-black dark:text-white">
+                  Hydraulic assisted power steering
+                </span>
+              </li>
+              <li className="w-full flex flex-row justify-between mb-4">
+                <span className="w-[35%] text-black dark:text-white font-semibold">
+                  STEERING SYSTEM
+                </span>
+                <span className="w-[60%] text-black dark:text-white">
+                  LDS (Lamborghini Dynamic Steering) with variable steering
+                  ratio; Lamborghini rear-wheel steering system
+                </span>
+              </li>
+            </ul>
+          </ScrollArea>
+        </div>
       </div>
       <div className="w-1/2 "></div>
     </div>
@@ -625,82 +706,86 @@ export const Engine = () => {
       className="section snap-start shrink-0 w-full h-screen flex flex-row items-center container z-[2] mx-auto"
     >
       <div className="w-1/2 "></div>
-      <div className="w-1/2 h-screen px-8 py-5 flex flex-col justify-center items-center text-pretty">
-        <h1 className="text-[--gold] text-3xl font-semibold mb-6">ENGINE</h1>
-        <ScrollArea className="w-full max-h-[50vh]">
-          <ul className="w-full text-sm text-pretty list-disc mb-5">
-            <li className="w-full flex flex-row justify-between mb-7">
-              <span className="w-1/2 text-black dark:text-white font-semibold">
-                TYPE
-              </span>
-              <span className="w-1/2 text-black dark:text-white">
-                V12, 60°, MPI (Multi Point Injection)
-              </span>
-            </li>
-            <li className="w-full flex flex-row justify-between mb-7">
-              <span className="w-1/2 text-black dark:text-white font-semibold">
-                DISPLACEMENT
-              </span>
-              <span className="w-1/2 text-black dark:text-white">
-                6.498 cm³ (396.5 cu in)
-              </span>
-            </li>
-            <li className="w-full flex flex-row justify-between mb-7">
-              <span className="w-1/2 text-black dark:text-white font-semibold">
-                BORE X STROKE
-              </span>
-              <span className="w-1/2 text-black dark:text-white">
-                95 mm x 76,4 mm (3.74 x 3.01 in)
-              </span>
-            </li>
-            <li className="w-full flex flex-row justify-between mb-7">
-              <span className="w-1/2 text-black dark:text-white font-semibold">
-                COMPRESSION RATIO
-              </span>
-              <span className="w-1/2 text-black dark:text-white">
-                11,8:1 ± 0,2
-              </span>
-            </li>
-            <li className="w-full flex flex-row justify-between mb-7">
-              <span className="w-1/2 text-black dark:text-white font-semibold">
-                MAX. POWER
-              </span>
-              <span className="w-1/2 text-black dark:text-white">
-                770 CV (566 kW) @ 8.500 rpm
-              </span>
-            </li>
-            <li className="w-full flex flex-row justify-between mb-7">
-              <span className="w-1/2 text-black dark:text-white font-semibold">
-                MAX. TORQUE
-              </span>
-              <span className="w-1/2 text-black dark:text-white">
-                690 Nm (507 lb.-ft.) @ 5.500 rpm
-              </span>
-            </li>
-            <li className="w-full flex flex-row justify-between mb-7">
-              <span className="w-1/2 text-black dark:text-white font-semibold">
-                WEIGHT-TO-POWER RATIO
-              </span>
-              <span className="w-1/2 text-black dark:text-white">
-                1,97 kg/CV (4.35 lb/CV)
-              </span>
-            </li>
-            <li className="w-full flex flex-row justify-between mb-7">
-              <span className="w-1/2 text-black dark:text-white font-semibold">
-                LUBRICATION
-              </span>
-              <span className="w-1/2 text-black dark:text-white">Dry sump</span>
-            </li>
-            <li className="w-full flex flex-row justify-between mb-7">
-              <span className="w-1/2 text-black dark:text-white font-semibold">
-                EMISSION CONTROL
-              </span>
-              <span className="w-1/2 text-black dark:text-white">
-                Euro 6 - LEV 2
-              </span>
-            </li>
-          </ul>
-        </ScrollArea>
+      <div data-aos="fade-left" className="w-1/2 h-screen px-8 py-5 flex flex-col justify-center items-center text-pretty">
+        <div className="max-w-[80%] h-fit ">
+          <h1 className="text-[--gold] text-3xl font-semibold mb-6">ENGINE</h1>
+          <ScrollArea className="w-full max-h-[50vh]">
+            <ul className="w-full text-sm text-pretty list-disc mb-5">
+              <li className="w-full flex flex-row justify-between mb-4">
+                <span className="w-1/2 text-black dark:text-white font-semibold">
+                  TYPE
+                </span>
+                <span className="w-1/2 text-black dark:text-white">
+                  V12, 60°, MPI (Multi Point Injection)
+                </span>
+              </li>
+              <li className="w-full flex flex-row justify-between mb-4">
+                <span className="w-1/2 text-black dark:text-white font-semibold">
+                  DISPLACEMENT
+                </span>
+                <span className="w-1/2 text-black dark:text-white">
+                  6.498 cm³ (396.5 cu in)
+                </span>
+              </li>
+              <li className="w-full flex flex-row justify-between mb-4">
+                <span className="w-1/2 text-black dark:text-white font-semibold">
+                  BORE X STROKE
+                </span>
+                <span className="w-1/2 text-black dark:text-white">
+                  95 mm x 76,4 mm (3.74 x 3.01 in)
+                </span>
+              </li>
+              <li className="w-full flex flex-row justify-between mb-4">
+                <span className="w-1/2 text-black dark:text-white font-semibold">
+                  COMPRESSION RATIO
+                </span>
+                <span className="w-1/2 text-black dark:text-white">
+                  11,8:1 ± 0,2
+                </span>
+              </li>
+              <li className="w-full flex flex-row justify-between mb-4">
+                <span className="w-1/2 text-black dark:text-white font-semibold">
+                  MAX. POWER
+                </span>
+                <span className="w-1/2 text-black dark:text-white">
+                  770 CV (566 kW) @ 8.500 rpm
+                </span>
+              </li>
+              <li className="w-full flex flex-row justify-between mb-4">
+                <span className="w-1/2 text-black dark:text-white font-semibold">
+                  MAX. TORQUE
+                </span>
+                <span className="w-1/2 text-black dark:text-white">
+                  690 Nm (507 lb.-ft.) @ 5.500 rpm
+                </span>
+              </li>
+              <li className="w-full flex flex-row justify-between mb-4">
+                <span className="w-1/2 text-black dark:text-white font-semibold">
+                  WEIGHT-TO-POWER RATIO
+                </span>
+                <span className="w-1/2 text-black dark:text-white">
+                  1,97 kg/CV (4.35 lb/CV)
+                </span>
+              </li>
+              <li className="w-full flex flex-row justify-between mb-4">
+                <span className="w-1/2 text-black dark:text-white font-semibold">
+                  LUBRICATION
+                </span>
+                <span className="w-1/2 text-black dark:text-white">
+                  Dry sump
+                </span>
+              </li>
+              <li className="w-full flex flex-row justify-between mb-4">
+                <span className="w-1/2 text-black dark:text-white font-semibold">
+                  EMISSION CONTROL
+                </span>
+                <span className="w-1/2 text-black dark:text-white">
+                  Euro 6 - LEV 2
+                </span>
+              </li>
+            </ul>
+          </ScrollArea>
+        </div>
       </div>
     </div>
   );
@@ -709,49 +794,121 @@ export const Wheels = () => {
   return (
     <div
       id="Wheels"
-      className="section snap-start shrink-0 w-full h-screen flex flex-row items-center container z-[2] mx-auto"
+      className="section snap-end shrink-0 w-full h-screen flex flex-row items-center container z-[2] mx-auto"
     >
-      <div className="w-1/2 h-screen px-8 py-5 flex flex-col justify-center items-center text-pretty">
-        <h1 className="text-[--gold] text-3xl font-semibold mb-6">WHEELS</h1>
-        <ScrollArea className="w-full max-h-[50vh]">
-          <ul className="w-full text-sm text-pretty list-disc mb-5">
-            <li className="w-full flex flex-row justify-between mb-7">
-              <span className="w-1/2 text-black dark:text-white font-semibold">
-                RIMS - FRONT
-              </span>
-              <span className="w-1/2 text-black dark:text-white">
-                {`20'' specific forged rims; 9J x 20 ET17.2`}
-              </span>
-            </li>
-            <li className="w-full flex flex-row justify-between mb-7">
-              <span className="w-1/2 text-black dark:text-white font-semibold">
-                RIMS - REAR
-              </span>
-              <span className="w-1/2 text-black dark:text-white">
-                {`21'' specific forged rims; 13J x 21 ET51.7`}
-              </span>
-            </li>
-            <li className="w-full flex flex-row justify-between mb-7">
-              <span className="w-1/2 text-black dark:text-white font-semibold">
-                TIRES - FRONT
-              </span>
-              <span className="w-1/2 text-black dark:text-white">
-                255/30 ZR20
-              </span>
-            </li>
-            <li className="w-full flex flex-row justify-between mb-7">
-              <span className="w-1/2 text-black dark:text-white font-semibold">
-                TIRES - REAR
-              </span>
-              <span className="w-1/2 text-black dark:text-white">
-                355/25 ZR21
-              </span>
-            </li>
-          </ul>
-        </ScrollArea>
+      <div data-aos="fade-right" className="w-1/2 h-screen px-8 py-5 flex flex-col justify-center items-center text-pretty">
+        <div className="max-w-[80%] h-fit ">
+          <h1 className="text-[--gold] text-3xl font-semibold mb-6">WHEELS</h1>
+          <ScrollArea className="w-full max-h-[50vh]">
+            <ul className="w-full text-sm text-pretty list-disc mb-5">
+              <li className="w-full flex flex-row justify-between mb-4">
+                <span className="w-1/2 text-black dark:text-white font-semibold">
+                  RIMS - FRONT
+                </span>
+                <span className="w-1/2 text-black dark:text-white">
+                  {`20'' specific forged rims; 9J x 20 ET17.2`}
+                </span>
+              </li>
+              <li className="w-full flex flex-row justify-between mb-4">
+                <span className="w-1/2 text-black dark:text-white font-semibold">
+                  RIMS - REAR
+                </span>
+                <span className="w-1/2 text-black dark:text-white">
+                  {`21'' specific forged rims; 13J x 21 ET51.7`}
+                </span>
+              </li>
+              <li className="w-full flex flex-row justify-between mb-4">
+                <span className="w-1/2 text-black dark:text-white font-semibold">
+                  TIRES - FRONT
+                </span>
+                <span className="w-1/2 text-black dark:text-white">
+                  255/30 ZR20
+                </span>
+              </li>
+              <li className="w-full flex flex-row justify-between mb-4">
+                <span className="w-1/2 text-black dark:text-white font-semibold">
+                  TIRES - REAR
+                </span>
+                <span className="w-1/2 text-black dark:text-white">
+                  355/25 ZR21
+                </span>
+              </li>
+            </ul>
+          </ScrollArea>
+        </div>
       </div>
       <div className="w-1/2 "></div>
     </div>
+  );
+};
+export const Footer = () => {
+  const d = new Date();
+  const year = d.getFullYear();
+
+  // Copyright Data
+  const copyright = [
+    {
+      description:
+        "1. Lamborghini Logo by worldvectorlogo.com is licensed under https://worldvectorlogo.com/terms-of-use.",
+    },
+    {
+      description:
+        "2. Lamborghini Centenario LP-770 Interior SDC - (https://skfb.ly/6Z9tX) by SDC PERFORMANCE™️ is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).",
+    },
+  ];
+
+  // Policy Data
+  const policy = [
+    {
+      description: "-- Data not available --",
+    },
+  ];
+
+  return (
+    <footer className="container mx-auto w-full p-4 border-t border-gray-200">
+      <div className="flex md:flex-row sm:flex-col md:justify-between  md:items-center">
+        <p className="text-gray-600 sm:text-center sm:mb-2">
+          &copy; {year} Future Project
+        </p>
+        <div className="flex flex-row flex-wrap sm:justify-between items-center text-gray-600 sm:text-[14px]">
+          <Dialog title="Copyright" dataList={copyright} space={true} />
+          <span className="mx-6 md:block sm:hidden">|</span>
+          <Dialog title="Privacy Policy" dataList={policy} />
+          <span className="mx-6 md:block sm:hidden">|</span>
+          <div className="w-fit flex flex-row items-center">
+            <a href="#" className="text-gray-600">
+              <i className="facebook">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="w-[18px] h-[18px]"
+                >
+                  <path d="M22.675 0H1.325C.593 0 0 .593 0 1.325v21.351C0 23.407.593 24 1.325 24H12.82v-9.294H9.692V11.29h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.464.098 2.796.143v3.24h-1.92c-1.507 0-1.8.717-1.8 1.767v2.314h3.59l-.467 3.417h-3.122V24h6.116c.732 0 1.325-.593 1.325-1.325V1.325C24 .593 23.407 0 22.675 0z" />
+                </svg>
+              </i>
+            </a>
+
+            <a href="#" className="text-gray-600 ml-4">
+              <i className="youtube ">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="w-[24px] h-[24px]"
+                >
+                  <path d="M23.498 6.186a2.958 2.958 0 0 0-2.081-2.087C19.734 3.5 12 3.5 12 3.5s-7.736 0-9.417.599a2.958 2.958 0 0 0-2.081 2.087C0 7.889 0 12 0 12s0 4.111.502 5.814a2.958 2.958 0 0 0 2.081 2.087C4.264 20.5 12 20.5 12 20.5s7.736 0 9.417-.599a2.958 2.958 0 0 0 2.081-2.087C24 16.111 24 12 24 12s0-4.111-.502-5.814zM9.75 15.568V8.432L15.568 12 9.75 15.568z" />
+                </svg>
+              </i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </footer>
   );
 };
 
@@ -771,11 +928,162 @@ export const Container3D = () => {
     new Map()
   );
 
+  // Positions Object
+  const positionObject: PositionObject = [
+    {
+      id: "Power",
+      position: { x: 0.2, y: -0.7, z: 8 },
+      rotation: { x: 0, y: -0.5, z: 0 },
+    },
+    {
+      id: "Overview",
+      position: { x: 0, y: -0.5, z: 11 },
+      rotation: { x: 0.1, y: 0, z: 0 },
+    },
+    {
+      id: "Design",
+      position: { x: 1.8, y: -0.5, z: 5 },
+      rotation: { x: 0.4, y: 0.5, z: 0 },
+    },
+    {
+      id: "Specifications",
+      position: { x: -2, y: -0.5, z: 5 },
+      rotation: { x: 0.4, y: -0.5, z: 0 },
+    },
+    {
+      id: "SteeringSuspension",
+      position: { x: 0.8, y: -0.7, z: 13 },
+      rotation: { x: 0, y: -2.4, z: 0 },
+    },
+    {
+      id: "Engine",
+      position: { x: -1.8, y: -0.4, z: 10.5 },
+      rotation: { x: 0.4, y: 4, z: 0 },
+    },
+    {
+      id: "Wheels",
+      position: { x: 1.35, y: -0.5, z: 12 },
+      rotation: { x: 0, y: -3, z: 0 },
+    },
+  ];
+  const positionObject_MD_Portrait: PositionObject = [
+    {
+      id: "Power",
+      position: { x: 1.5, y: 3, z: 0 },
+      rotation: { x: 0, y: -1, z: 0 },
+    },
+    {
+      id: "Overview",
+      position: { x: -2, y: 0.5, z: 0 },
+      rotation: { x: 1, y: -0.5, z: 0 },
+    },
+    {
+      id: "Design",
+      position: { x: 1.7, y: 1, z: 0 },
+      rotation: { x: 0, y: 1, z: 0 },
+    },
+    {
+      id: "Specifications",
+      position: { x: 1, y: -0.5, z: 0 },
+      rotation: { x: 0, y: -1, z: 0 },
+    },
+    {
+      id: "SteeringSuspension",
+      position: { x: 1, y: -0.5, z: 0 },
+      rotation: { x: 0, y: -1, z: 0 },
+    },
+    {
+      id: "Engine",
+      position: { x: 1, y: -0.5, z: 0 },
+      rotation: { x: 0, y: -1, z: 0 },
+    },
+    {
+      id: "Wheels",
+      position: { x: 1, y: -0.5, z: 0 },
+      rotation: { x: 0, y: -1, z: 0 },
+    },
+  ];
+  const positionObject_MD: PositionObject = [
+    {
+      id: "Power",
+      position: { x: 1.5, y: 3, z: 0 },
+      rotation: { x: 0, y: -1, z: 0 },
+    },
+    {
+      id: "Overview",
+      position: { x: -2, y: 0.5, z: 0 },
+      rotation: { x: 1, y: -0.5, z: 0 },
+    },
+    {
+      id: "Design",
+      position: { x: 1.7, y: 1, z: 0 },
+      rotation: { x: 0, y: 1, z: 0 },
+    },
+    {
+      id: "Specifications",
+      position: { x: 1, y: -0.5, z: 0 },
+      rotation: { x: 0, y: -1, z: 0 },
+    },
+    {
+      id: "SteeringSuspension",
+      position: { x: 1, y: -0.5, z: 0 },
+      rotation: { x: 0, y: -1, z: 0 },
+    },
+    {
+      id: "Engine",
+      position: { x: 1, y: -0.5, z: 0 },
+      rotation: { x: 0, y: -1, z: 0 },
+    },
+    {
+      id: "Wheels",
+      position: { x: 1, y: -0.5, z: 0 },
+      rotation: { x: 0, y: -1, z: 0 },
+    },
+  ];
+  const positionObject_SM: PositionObject = [
+    {
+      id: "Power",
+      position: { x: 0, y: -2, z: 0 },
+      rotation: { x: 0, y: -1, z: 0 },
+    },
+    {
+      id: "Overview",
+      position: { x: 0, y: -4, z: 0 },
+      rotation: { x: -1, y: 3, z: 1 },
+    },
+    {
+      id: "Design",
+      position: { x: 0, y: -3, z: 0 },
+      rotation: { x: 0, y: 1.5, z: 0 },
+    },
+    {
+      id: "Specifications",
+      position: { x: 1.5, y: -1, z: 0 },
+      rotation: { x: 0, y: -1, z: 0 },
+    },
+    {
+      id: "SteeringSuspension",
+      position: { x: 1.5, y: -1, z: 0 },
+      rotation: { x: 0, y: -1, z: 0 },
+    },
+    {
+      id: "Engine",
+      position: { x: 1.5, y: -1, z: 0 },
+      rotation: { x: 0, y: -1, z: 0 },
+    },
+    {
+      id: "Wheels",
+      position: { x: 1.5, y: -1, z: 0 },
+      rotation: { x: 0, y: -1, z: 0 },
+    },
+  ];
+
   const loadModel = async () => {
     const scene = new THREE.Scene();
     const loader = new GLTFLoader();
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     let camera: THREE.PerspectiveCamera | undefined;
+    let rotationAnimation: GSAPTween | null = null;
 
     // Existing lights
     const light = new THREE.AmbientLight(0xffffff, 3); // Lower ambient light intensity for more contrast
@@ -814,156 +1122,6 @@ export const Container3D = () => {
     const mobile = window.matchMedia(
       "(min-width: 320px) and (max-width: 768px)"
     ).matches;
-
-    // Positions Object
-    const positionObject: PositionObject = [
-      {
-        id: "Power",
-        position: { x: 0.2, y: -0.7, z: 8 },
-        rotation: { x: 0, y: -0.5, z: 0 },
-      },
-      {
-        id: "Overview",
-        position: { x: -0.7, y: -0.67, z: 12 },
-        rotation: { x: 0, y: 0, z: 0 },
-      },
-      {
-        id: "Design",
-        position: { x: 0, y: -0.7, z: 14 },
-        rotation: { x: 0.3, y: 0, z: 0 },
-      },
-      {
-        id: "Specifications",
-        position: { x: 0.1, y: -0.6, z: 10 },
-        rotation: { x: 0, y: -0.3, z: 0 },
-      },
-      {
-        id: "SteeringSuspension",
-        position: { x: 0.8, y: -0.7, z: 13 },
-        rotation: { x: 0, y: -2.4, z: 0 },
-      },
-      {
-        id: "Engine",
-        position: { x: 1, y: -1, z: 0 },
-        rotation: { x: 0, y: -1, z: 0 },
-      },
-      {
-        id: "Wheels",
-        position: { x: 1, y: -0.6, z: 12 },
-        rotation: { x: 0, y: -3, z: 0 },
-      },
-    ];
-    const positionObject_MD_Portrait: PositionObject = [
-      {
-        id: "Power",
-        position: { x: 1.5, y: 3, z: 0 },
-        rotation: { x: 0, y: -1, z: 0 },
-      },
-      {
-        id: "Overview",
-        position: { x: -2, y: 0.5, z: 0 },
-        rotation: { x: 1, y: -0.5, z: 0 },
-      },
-      {
-        id: "Design",
-        position: { x: 1.7, y: 1, z: 0 },
-        rotation: { x: 0, y: 1, z: 0 },
-      },
-      {
-        id: "Specifications",
-        position: { x: 1, y: -0.5, z: 0 },
-        rotation: { x: 0, y: -1, z: 0 },
-      },
-      {
-        id: "SteeringSuspension",
-        position: { x: 1, y: -0.5, z: 0 },
-        rotation: { x: 0, y: -1, z: 0 },
-      },
-      {
-        id: "Engine",
-        position: { x: 1, y: -0.5, z: 0 },
-        rotation: { x: 0, y: -1, z: 0 },
-      },
-      {
-        id: "Wheels",
-        position: { x: 1, y: -0.5, z: 0 },
-        rotation: { x: 0, y: -1, z: 0 },
-      },
-    ];
-    const positionObject_MD: PositionObject = [
-      {
-        id: "Power",
-        position: { x: 1.5, y: 3, z: 0 },
-        rotation: { x: 0, y: -1, z: 0 },
-      },
-      {
-        id: "Overview",
-        position: { x: -2, y: 0.5, z: 0 },
-        rotation: { x: 1, y: -0.5, z: 0 },
-      },
-      {
-        id: "Design",
-        position: { x: 1.7, y: 1, z: 0 },
-        rotation: { x: 0, y: 1, z: 0 },
-      },
-      {
-        id: "Specifications",
-        position: { x: 1, y: -0.5, z: 0 },
-        rotation: { x: 0, y: -1, z: 0 },
-      },
-      {
-        id: "SteeringSuspension",
-        position: { x: 1, y: -0.5, z: 0 },
-        rotation: { x: 0, y: -1, z: 0 },
-      },
-      {
-        id: "Engine",
-        position: { x: 1, y: -0.5, z: 0 },
-        rotation: { x: 0, y: -1, z: 0 },
-      },
-      {
-        id: "Wheels",
-        position: { x: 1, y: -0.5, z: 0 },
-        rotation: { x: 0, y: -1, z: 0 },
-      },
-    ];
-    const positionObject_SM: PositionObject = [
-      {
-        id: "Power",
-        position: { x: 0, y: -2, z: 0 },
-        rotation: { x: 0, y: -1, z: 0 },
-      },
-      {
-        id: "Overview",
-        position: { x: 0, y: -4, z: 0 },
-        rotation: { x: -1, y: 3, z: 1 },
-      },
-      {
-        id: "Design",
-        position: { x: 0, y: -3, z: 0 },
-        rotation: { x: 0, y: 1.5, z: 0 },
-      },
-      {
-        id: "Specifications",
-        position: { x: 1.5, y: -1, z: 0 },
-        rotation: { x: 0, y: -1, z: 0 },
-      },
-      {
-        id: "SteeringSuspension",
-        position: { x: 1.5, y: -1, z: 0 },
-        rotation: { x: 0, y: -1, z: 0 },
-      },
-      {
-        id: "Engine",
-        position: { x: 1.5, y: -1, z: 0 },
-        rotation: { x: 0, y: -1, z: 0 },
-      },
-      {
-        id: "Wheels",
-        position: { x: 1.5, y: -1, z: 0 },
-        rotation: { x: 0, y: -1, z: 0 },
-      },
-    ];
 
     const setCamera = async () => {
       // Set Camera
@@ -1115,10 +1273,29 @@ export const Container3D = () => {
           ease: "power1.out",
         });
 
+        /** Manual Control Animation By Section ID */
+        if (!currentSection) return;
+
+        // Infinite rotation ID Specifications
+        if (currentSection === "Specifications") {
+          if (!rotationAnimation || !rotationAnimation.isActive()) {
+            rotationAnimation = gsap.to(carRef.current.rotation, {
+              y: "+=360", // Incremental rotation
+              duration: 1000,
+              ease: "linear",
+              repeat: -1, // Infinite repeat
+            });
+          } else {
+            rotationAnimation.resume();
+          }
+        } else {
+          if (rotationAnimation) rotationAnimation.pause();
+        }
+
         // Example: play a specific animation clip based on section ID
         if (
-          (currentSection && currentSection === "Design") ||
-          (currentSection && currentSection === "SteeringSuspension")
+          currentSection === "Design" ||
+          currentSection === "SteeringSuspension"
         ) {
           const action = animationsMapRef.current?.get("Animation");
           if (action) {
@@ -1147,8 +1324,6 @@ export const Container3D = () => {
 
     container?.addEventListener("scroll", handleScroll);
 
-    console.log("Snap");
-
     // Debounced resize handler
     const handleResize = () => {
       if (resizeTimeout.current) clearTimeout(resizeTimeout.current);
@@ -1173,84 +1348,18 @@ export const Container3D = () => {
     setTimeout(() => {
       loadModel();
     }, 1000);
-  }, []);
+  }, [
+    positionObject,
+    positionObject_MD_Portrait,
+    positionObject_MD,
+    positionObject_SM,
+  ]);
 
   return (
     <div
       id="container3D"
       className="fixed inset-0 z-[-1] pointer-events-none"
     ></div>
-  );
-};
-
-export const Footer = () => {
-  const d = new Date();
-  const year = d.getFullYear();
-
-  // Copyright Data
-  const copyright = [
-    {
-      description:
-        "1. Lamborghini Logo by worldvectorlogo.com is licensed under https://worldvectorlogo.com/terms-of-use.",
-    },
-    {
-      description:
-        "2. Lamborghini Centenario LP-770 Interior SDC - (https://skfb.ly/6Z9tX) by SDC PERFORMANCE™️ is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).",
-    },
-  ];
-
-  // Policy Data
-  const policy = [
-    {
-      description: "-- Data not available --",
-    },
-  ];
-
-  return (
-    <footer className="container mx-auto w-full p-4 border-t border-gray-200">
-      <div className="flex md:flex-row sm:flex-col md:justify-between  md:items-center">
-        <p className="text-gray-600 sm:text-center sm:mb-2">
-          &copy; {year} Future Project
-        </p>
-        <div className="flex flex-row flex-wrap sm:justify-between items-center text-gray-600 sm:text-[14px]">
-          <Dialog title="Copyright" dataList={copyright} space={true} />
-          <span className="mx-6 md:block sm:hidden">|</span>
-          <Dialog title="Privacy Policy" dataList={policy} />
-          <span className="mx-6 md:block sm:hidden">|</span>
-          <div className="w-fit flex flex-row items-center">
-            <a href="#" className="text-gray-600">
-              <i className="facebook">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="w-[18px] h-[18px]"
-                >
-                  <path d="M22.675 0H1.325C.593 0 0 .593 0 1.325v21.351C0 23.407.593 24 1.325 24H12.82v-9.294H9.692V11.29h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.464.098 2.796.143v3.24h-1.92c-1.507 0-1.8.717-1.8 1.767v2.314h3.59l-.467 3.417h-3.122V24h6.116c.732 0 1.325-.593 1.325-1.325V1.325C24 .593 23.407 0 22.675 0z" />
-                </svg>
-              </i>
-            </a>
-
-            <a href="#" className="text-gray-600 ml-4">
-              <i className="youtube ">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="w-[24px] h-[24px]"
-                >
-                  <path d="M23.498 6.186a2.958 2.958 0 0 0-2.081-2.087C19.734 3.5 12 3.5 12 3.5s-7.736 0-9.417.599a2.958 2.958 0 0 0-2.081 2.087C0 7.889 0 12 0 12s0 4.111.502 5.814a2.958 2.958 0 0 0 2.081 2.087C4.264 20.5 12 20.5 12 20.5s7.736 0 9.417-.599a2.958 2.958 0 0 0 2.081-2.087C24 16.111 24 12 24 12s0-4.111-.502-5.814zM9.75 15.568V8.432L15.568 12 9.75 15.568z" />
-                </svg>
-              </i>
-            </a>
-          </div>
-        </div>
-      </div>
-    </footer>
   );
 };
 
@@ -1306,7 +1415,7 @@ export const Dialog = ({
                 <span
                   key={index + list.description}
                   className={[
-                    "max-w-[90%] text-pretty ",
+                    "max-max-w-[80%] h-fit text-pretty ",
                     !space ? "" : "mb-3",
                   ].join(" ")}
                 >
@@ -1324,55 +1433,36 @@ export const Dialog = ({
   );
 };
 
-type MobileNavigationProps = {
-  title: string | JSX.Element;
-  dataMenu: {
-    title: string;
-    href: string;
-  }[];
-  extraButton: JSX.Element;
-};
-export const MobileNavigation = ({
-  title,
-  dataMenu,
-  extraButton,
-}: MobileNavigationProps) => {
-  const router = useRouter();
-  const [open, setOpen] = React.useState(false);
+// Create an Intersection Observer to trigger AOS manually
+export const aosObserver = () => {
+  const section = document.querySelectorAll(".section");
+  let currentSection: string | undefined = undefined;
+  section.forEach((el) => {
+    const rect = el.getBoundingClientRect();
+    if (rect.top <= window.innerHeight / 2) {
+      currentSection = el.id;
+    }
+  });
 
-  return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger>{title}</SheetTrigger>
-      <SheetContent className="w-[100vw] m-0">
-        <SheetHeader>
-          <SheetTitle>Menu</SheetTitle>
-          <SheetDescription />
-        </SheetHeader>
-        <div className="w-full h-fit flex flex-col  items-center">
-          <ul className="w-full my-6">
-            {dataMenu.map((list, index) => (
-              <li
-                key={index + list.title}
-                className="w-full text-lg hover:text-gray-600 font-bold border-b p-3"
-                onClick={() => {
-                  setOpen(false);
-
-                  setTimeout(() => {
-                    router.push(list.href);
-                  }, 1000);
-                }}
-              >
-                {list.title}
-              </li>
-            ))}
-          </ul>
-          {extraButton && (
-            <div className="w-full absolute bottom-2 left-0 right-0 p-6">
-              {extraButton}
-            </div>
-          )}
-        </div>
-      </SheetContent>
-    </Sheet>
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          // Trigger AOS refresh when section is visible
+          AOS.refresh();
+        }
+      });
+    },
+    {
+      threshold: 0.5, // Trigger when 50% of the section is in view
+    }
   );
+
+  if (currentSection) {
+    const element: NodeListOf<Element> = document.querySelectorAll(
+      `#${currentSection}`
+    );
+    if (!element) return;
+    observer.observe(element[0]);
+  }
 };
