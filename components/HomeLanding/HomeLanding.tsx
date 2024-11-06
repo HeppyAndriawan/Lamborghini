@@ -42,7 +42,7 @@ export default function HomeLanding() {
   useEffect(() => {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
-        .register("/sw.js", { scope: baseurl === "/" ? "/" : "/Lamborghini/" })
+        .register("/Lamborghini/sw.js", { scope: baseurl === "/" ? "/" : "/Lamborghini/" })
         .then((registration) => {
           // Check cache status after registration
           if (registration.active) {
