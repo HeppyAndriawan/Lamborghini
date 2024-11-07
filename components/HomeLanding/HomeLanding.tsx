@@ -539,7 +539,7 @@ export const Power = () => {
   return (
     <div
       id="Power"
-      className="section snap-start shrink-0 w-full h-screen flex flex-col items-center md:container z-[2] mx-auto relative"
+      className="section snap-start shrink-0 w-full h-[100dvh] flex flex-col items-center md:container md:mx-auto relative"
     >
       <div className="lg:w-1/3 md:w-1/2 sm:w-[90%] text-center mt-[11vh]">
         <h5 className="text-center text-[--gold] md:text-3xl sm:2xl font-semibold">
@@ -573,7 +573,7 @@ export const Overview = () => {
   return (
     <div
       id="Overview"
-      className="section snap-start shrink-0 w-full h-screen flex lg:flex-row md:flex-row sm:flex-col items-center md:container z-[2] md:mx-auto sm:px-[5%]"
+      className="section snap-start shrink-0 w-full h-[100dvh] flex lg:flex-row md:flex-row sm:flex-col items-center md:container z-[2] md:mx-auto sm:px-[5%]"
     >
       <div className="md:w-1/2 sm:w-full sm:h-[50vh]"></div>
       <div
@@ -604,7 +604,7 @@ export const Design = () => {
   return (
     <div
       id="Design"
-      className="section snap-start shrink-0 w-full h-screen flex lg:flex-row md:flex-row sm:flex-col-reverse justify-center items-center md:container z-[2] md:mx-auto sm:px-[5%]"
+      className="section snap-start shrink-0 w-full h-[100dvh] flex lg:flex-row md:flex-row sm:flex-col-reverse justify-center items-center md:container z-[2] md:mx-auto sm:px-[5%]"
     >
       <div
         data-aos="fade-right"
@@ -638,7 +638,7 @@ export const Specifications = () => {
   return (
     <div
       id="Specifications"
-      className="section snap-start shrink-0 w-full h-screen flex md:flex-row sm:flex-col items-center md:container z-[2] md:mx-auto sm:px-[5%]"
+      className="section snap-start shrink-0 w-full h-[100dvh] flex md:flex-row sm:flex-col items-center md:container z-[2] md:mx-auto sm:px-[5%]"
     >
       <div className="md:w-1/2 sm:w-full sm:h-[50vh] "></div>
       <div
@@ -705,7 +705,7 @@ export const SteeringSuspension = () => {
   return (
     <div
       id="SteeringSuspension"
-      className="section snap-start shrink-0 w-full h-screen flex md:flex-row sm:flex-col-reverse items-center md:container z-[2] md:mx-auto sm:px-[5%]"
+      className="section snap-start shrink-0 w-full h-[100dvh] flex md:flex-row sm:flex-col-reverse items-center md:container z-[2] md:mx-auto sm:px-[5%]"
     >
       <div
         data-aos="fade-right"
@@ -771,7 +771,7 @@ export const Engine = () => {
   return (
     <div
       id="Engine"
-      className="section snap-start shrink-0 w-full h-screen flex md:flex-row sm:flex-col items-center md:container z-[2] md:mx-auto sm:px-[5%]"
+      className="section snap-start shrink-0 w-full h-[100dvh] flex md:flex-row sm:flex-col items-center md:container z-[2] md:mx-auto sm:px-[5%]"
     >
       <div className="md:w-1/2 sm:w-full sm:h-[50vh] "></div>
       <div
@@ -865,7 +865,7 @@ export const Wheels = () => {
   return (
     <div
       id="Wheels"
-      className="section snap-end shrink-0 w-full h-screen flex md:flex-row sm:flex-col-reverse items-center md:container z-[2] md:mx-auto sm:px-[5%]"
+      className="section snap-end shrink-0 w-full h-[100dvh] flex md:flex-row sm:flex-col-reverse items-center md:container z-[2] md:mx-auto sm:px-[5%]"
     >
       <div
         data-aos="fade-right"
