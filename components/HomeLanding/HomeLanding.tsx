@@ -460,13 +460,13 @@ export const Loading = ({ number }: Loading) => {
   return (
     <div
       id="loading"
-      className={`w-full h-screen flex justify-center items-center z-49 bg-background `}
+      className={`w-full h-[100dvh] flex justify-center items-center z-49 bg-background `}
     >
       <div className="w-1/3 mx-auto flex flex-col items-center mb-[11vh]">
         <Image
           src={`${baseurl + "asset/logo.svg"}`}
-          width={40*3}
-          height={42*3}
+          width={40 * 3}
+          height={42 * 3}
           alt="logo"
           className="w-[120px] h-[128px] mb-4"
         />
@@ -488,43 +488,43 @@ export const Loading = ({ number }: Loading) => {
 export const CarBlockContainer = () => {
   return (
     <div className="w-full h-screen absolute top-0 left-0 right-0 bottom-0 bg-transparent z-1">
-      <div className="w-full h-screen"></div>
-      <div className="w-full h-screen flex lg:flex-row md:flex-row sm:flex-col">
+      <div className="w-full h-[100dvh]"></div>
+      <div className="w-full h-[100dvh] flex lg:flex-row md:flex-row sm:flex-col">
         <div className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full"></div>
         <div
           data-aos="fade-left"
           className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white dark:bg-[#181818]"
         ></div>
       </div>
-      <div className="w-full h-screen flex lg:flex-row md:flex-row sm:flex-col-reverse">
+      <div className="w-full h-[100dvh] flex lg:flex-row md:flex-row sm:flex-col-reverse">
         <div
           data-aos="fade-right"
           className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white dark:bg-[#181818]"
         ></div>
         <div className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full"></div>
       </div>
-      <div className="w-full h-screen flex lg:flex-row md:flex-row sm:flex-col">
+      <div className="w-full h-[100dvh] flex lg:flex-row md:flex-row sm:flex-col">
         <div className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full"></div>
         <div
           data-aos="fade-left"
           className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white dark:bg-[#181818]"
         ></div>
       </div>
-      <div className="w-full h-screen flex lg:flex-row md:flex-row sm:flex-col-reverse">
+      <div className="w-full h-[100dvh] flex lg:flex-row md:flex-row sm:flex-col-reverse">
         <div
           data-aos="fade-right"
           className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white dark:bg-[#181818]"
         ></div>
         <div className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full"></div>
       </div>
-      <div className="w-full h-screen flex lg:flex-row md:flex-row sm:flex-col">
+      <div className="w-full h-[100dvh] flex lg:flex-row md:flex-row sm:flex-col">
         <div className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full"></div>
         <div
           data-aos="fade-left"
           className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white dark:bg-[#181818]"
         ></div>
       </div>
-      <div className="w-full h-screen flex lg:flex-row md:flex-row sm:flex-col-reverse">
+      <div className="w-full h-[100dvh] flex lg:flex-row md:flex-row sm:flex-col-reverse">
         <div
           data-aos="fade-right"
           className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white dark:bg-[#181818]"
@@ -1378,7 +1378,9 @@ export const Container3D = () => {
       if (positionActive >= 0 && carRef.current !== null) {
         const newCordinate = position3DModel();
 
-        console.log(newCordinate);
+        if (process.env.NODE_ENV === "development") {
+          console.log(newCordinate);
+        }
 
         gsap.to(carRef.current.position, {
           y: newCordinate?.position.y,
