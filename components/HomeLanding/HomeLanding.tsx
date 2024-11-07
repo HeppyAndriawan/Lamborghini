@@ -42,8 +42,8 @@ export default function HomeLanding() {
   useEffect(() => {
     if (!baseurl) return;
     if ("serviceWorker" in navigator) {
-      const swURL = "/sw.js"; //change "/Lamborghini/sw.js" for production
-      const swScope = "/"; // change "/Lamborghini/" for production
+      const swURL = "/Lamborghini/sw.js"; //change "/Lamborghini/sw.js" for production
+      const swScope = "/Lamborghini/"; // change "/Lamborghini/" for production
 
       window.addEventListener("load", async () => {
         const registerSW = await navigator.serviceWorker.register(swURL, {
