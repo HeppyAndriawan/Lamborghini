@@ -40,7 +40,6 @@ export default function HomeLanding() {
 
   // Register Service worker
   useEffect(() => {
-    if (!baseurl) return;
     const url = process.env.NODE_ENV === "development" ? "" : "/Lamborghini";
     if ("serviceWorker" in navigator) {
       const swURL =  `${url}/sw.js`; //change "/Lamborghini/sw.js" for production
@@ -91,7 +90,7 @@ export default function HomeLanding() {
         );
       };
     }
-  }, [baseurl]);
+  }, []);
 
   // Show Hide
   const [isLoadOver, setisLoadOver] = useState<boolean>(false);
