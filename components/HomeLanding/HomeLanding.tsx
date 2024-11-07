@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect, Suspense, useRef, Fragment } from "react";
+import React, { useState, useEffect,useLayoutEffect, Suspense, useRef, Fragment } from "react";
 import useThemeMode from "@/tool/useThemeMode/useThemeMode";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
@@ -40,19 +40,22 @@ export default function HomeLanding() {
 
   // Register Service worker
   const url = process.env.NODE_ENV === "development" ? "" : "/Lamborghini";
-  useEffect(() => {
+  useLayoutEffect(() => {
     if(!url)return
+    console.log("registering service worker");
     if ("serviceWorker" in navigator) {
       const swURL = `${url}/sw.js`; //change "/Lamborghini/sw.js" for production
       const swScope = `${url}/`; // change "/Lamborghini/" for production
 
       window.addEventListener("load", async () => {
+        console.log("window loaded");
         const registerSW = await navigator.serviceWorker.register(swURL, {
           scope: swScope,
         });
-
+        
         // Hit on First time registration
         if (registerSW.installing) {
+          console.log("installing");
           registerSW.installing?.addEventListener("statechange", (e) => {
             const target = e.target as ServiceWorker;
             if (target.state === "activated") {
