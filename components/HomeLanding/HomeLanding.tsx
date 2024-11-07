@@ -40,18 +40,32 @@ export default function HomeLanding() {
 
   // Register Service worker
   useEffect(() => {
+    if (!baseurl) return;
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker
-        .register("/Lamborghini/sw.js", { scope: baseurl === "/" ? "/" : "/Lamborghini/" })
-        .then((registration) => {
-          // Check cache status after registration
-          if (registration.active) {
-            registration.active.postMessage({ type: "CHECK_CACHE_STATUS" });
-          }
-        })
-        .catch((error) => {
-          console.error("Service Worker registration failed:", error);
+      const swURL = "/sw.js"; //change "/Lamborghini/sw.js" for production
+      const swScope = "/"; // change "/Lamborghini/" for production
+
+      window.addEventListener("load", async () => {
+        const registerSW = await navigator.serviceWorker.register(swURL, {
+          scope: swScope,
         });
+
+        // Hit on First time registration
+        if (!registerSW) return;
+        if (registerSW.installing) {
+          registerSW.installing?.addEventListener("statechange", (e) => {
+            const target = e.target as ServiceWorker;
+            if (target.state === "activated") {
+              window.location.reload();
+            }
+          });
+        }
+
+        // Send message on first reload
+        if (registerSW.active) {
+          registerSW.active.postMessage({ type: "CHECK_CACHE_STATUS" });
+        }
+      });
 
       // Listen for messages from the service worker
       function handleServiceWorkerMessage(event: MessageEvent) {
@@ -76,7 +90,7 @@ export default function HomeLanding() {
         );
       };
     }
-  }, []);
+  }, [baseurl]);
 
   // Show Hide
   const [isLoadOver, setisLoadOver] = useState<boolean>(false);
@@ -138,6 +152,7 @@ export default function HomeLanding() {
           <SteeringSuspension />
           <Engine />
           <Wheels />
+          <Footer lastComponent="Wheels" />
         </Fragment>
       )}
     </div>
@@ -151,7 +166,7 @@ export const Navigation = () => {
   const [isMobile, setisMobile] = useState<boolean>(false);
   useEffect(() => {
     const mobile = window.matchMedia(
-      "(min-width: 320px) and (max-width: 768px)"
+      "(min-width: 320px) and (max-width: 767px)"
     ).matches;
     switch (mobile) {
       case true:
@@ -173,14 +188,6 @@ export const Navigation = () => {
   // Data Mobile Navigation
   const mobileNavigation = [
     {
-      title: "Power",
-      href: "/",
-    },
-    {
-      title: "Overview",
-      href: "#Overview",
-    },
-    {
       title: "Design",
       href: "#Design",
     },
@@ -188,11 +195,19 @@ export const Navigation = () => {
       title: "Specifications",
       href: "#Specifications",
     },
+    {
+      title: "Suspension",
+      href: "#SteeringSuspension",
+    },
+    {
+      title: "Engine",
+      href: "#Engine",
+    },
   ];
 
   if (isMobile) {
     return (
-      <header className="w-full flex justify-between items-center pt-3 pb-12">
+      <header className="w-full sm:px-[5%] flex justify-between items-center pt-3 pb-12">
         <div className="flex items-center">
           <Image
             src={`${baseurl + "asset/logo.svg"}`}
@@ -224,53 +239,55 @@ export const Navigation = () => {
           extraButton={
             <button
               onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="w-full bg-black dark:bg-[--gold] text-white px-[1rem] py-[.5rem] text-sm font-bold flex flex-row items-center"
+              className="w-full bg-[--gold] text-white px-[1rem] py-[.5rem] text-sm font-bold flex flex-row justify-center rounded-[10px]"
             >
-              {theme === "dark" ? (
-                <Fragment>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="lucide lucide-sun w-[15px] h-[15px] mr-[5px]"
-                  >
-                    <circle cx="12" cy="12" r="4" />
-                    <path d="M12 2v2" />
-                    <path d="M12 20v2" />
-                    <path d="m4.93 4.93 1.41 1.41" />
-                    <path d="m17.66 17.66 1.41 1.41" />
-                    <path d="M2 12h2" />
-                    <path d="M20 12h2" />
-                    <path d="m6.34 17.66-1.41 1.41" />
-                    <path d="m19.07 4.93-1.41 1.41" />
-                  </svg>
-                  <span>Light</span>
-                </Fragment>
-              ) : (
-                <Fragment>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    className="lucide lucide-moon w-[15px] h-[15px] mr-[5px]"
-                  >
-                    <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-                  </svg>
-                  <span>Dark</span>
-                </Fragment>
-              )}
+              <div className="flex flex-row items-center">
+                {theme === "dark" ? (
+                  <Fragment>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="lucide lucide-sun w-[15px] h-[15px] mr-[5px]"
+                    >
+                      <circle cx="12" cy="12" r="4" />
+                      <path d="M12 2v2" />
+                      <path d="M12 20v2" />
+                      <path d="m4.93 4.93 1.41 1.41" />
+                      <path d="m17.66 17.66 1.41 1.41" />
+                      <path d="M2 12h2" />
+                      <path d="M20 12h2" />
+                      <path d="m6.34 17.66-1.41 1.41" />
+                      <path d="m19.07 4.93-1.41 1.41" />
+                    </svg>
+                    <span>Light</span>
+                  </Fragment>
+                ) : (
+                  <Fragment>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="lucide lucide-moon w-[15px] h-[15px] mr-[5px]"
+                    >
+                      <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+                    </svg>
+                    <span>Dark</span>
+                  </Fragment>
+                )}
+              </div>
             </button>
           }
         />
@@ -278,7 +295,7 @@ export const Navigation = () => {
     );
   }
   return (
-    <header className="container mx-auto w-full md:flex sm:hidden flex justify-between items-center lg:px-0 md:p-4 fixed top-0 left-0 right-0 z-50">
+    <header className="container mx-auto lg:px-[3%] md:px-[5%] w-full md:flex sm:hidden flex justify-between items-center xl:px-0 md:p-4 fixed top-0 left-0 right-0 z-50">
       <div className="flex items-center">
         <Image
           src={`${baseurl + "asset/logo.svg"}`}
@@ -287,31 +304,16 @@ export const Navigation = () => {
           alt="logo"
         />
       </div>
-      <nav className="flex space-x-4 items-center bg-background dark:bg-background px-6 py-2 rounded-full">
-        <a
-          href="#Section03"
-          className="text-gray-600 hover:text-[--gold] dark:text-white dark:hover:text-[--gold] text-sm font-bold px-[1rem]"
-        >
-          Power
-        </a>
-        <a
-          href="#Section04"
-          className="text-gray-600 hover:text-[--gold] dark:text-white dark:hover:text-[--gold] text-sm font-bold px-[1rem]"
-        >
-          Overview
-        </a>
-        <a
-          href="#Section04"
-          className="text-gray-600 hover:text-[--gold] dark:text-white dark:hover:text-[--gold] text-sm font-bold px-[1rem]"
-        >
-          Design
-        </a>
-        <a
-          href="#Section04"
-          className="text-gray-600 hover:text-[--gold] dark:text-white dark:hover:text-[--gold] text-sm font-bold px-[1rem]"
-        >
-          Specifications
-        </a>
+      <nav className="flex space-x-4 items-center bg-background dark:bg-background lg:ml-20 px-6 py-2 rounded-full">
+        {mobileNavigation.map((list, index) => (
+          <a
+            key={index + list.title}
+            href="#Section03"
+            className="text-gray-600 hover:text-[--gold] dark:text-white dark:hover:text-[--gold] text-sm font-bold px-[1rem]"
+          >
+            {list.title}
+          </a>
+        ))}
       </nav>
       <div className="flex space-x-4 items-center">
         <Dialog
@@ -477,44 +479,44 @@ export const CarBlockContainer = () => {
   return (
     <div className="w-full h-screen absolute top-0 left-0 right-0 bottom-0 bg-transparent z-1">
       <div className="w-full h-screen"></div>
-      <div className="w-full h-screen flex flex-row">
-        <div className="w-1/2"></div>
+      <div className="w-full h-screen flex  md:flex-row sm:flex-col">
+        <div className="md:w-1/2 sm:min-w-full sm:h-[50vh] sm:max-w-full"></div>
         <div
           data-aos="fade-left"
-          className="w-1/2 bg-white dark:bg-[#181818]"
+          className="md:w-1/2 sm:min-w-full sm:h-[50vh] sm:max-w-full bg-white dark:bg-[#181818]"
         ></div>
       </div>
-      <div className="w-full h-screen flex flex-row">
+      <div className="w-full h-screen flex md:flex-row sm:flex-col-reverse">
         <div
           data-aos="fade-right"
-          className="w-1/2 bg-white dark:bg-[#181818]"
+          className="md:w-1/2 sm:min-w-full sm:h-[50vh] sm:max-w-full bg-white dark:bg-[#181818]"
         ></div>
-        <div className="w-1/2"></div>
+        <div className="md:w-1/2 sm:min-w-full sm:h-[50vh] sm:max-w-full"></div>
       </div>
-      <div className="w-full h-screen flex flex-row">
-        <div className="w-1/2"></div>
+      <div className="w-full h-screen flex md:flex-row sm:flex-col">
+        <div className="md:w-1/2 sm:min-w-full sm:h-[50vh] sm:max-w-full"></div>
         <div
           data-aos="fade-left"
-          className="w-1/2 bg-white dark:bg-[#181818]"
+          className="md:w-1/2 sm:min-w-full sm:h-[50vh] sm:max-w-full bg-white dark:bg-[#181818]"
         ></div>
       </div>
-      <div className="w-full h-screen flex flex-row">
+      <div className="w-full h-screen flex md:flex-row sm:flex-col-reverse">
         <div
           data-aos="fade-right"
-          className="w-1/2 bg-white dark:bg-[#181818]"
+          className="md:w-1/2 sm:min-w-full sm:h-[50vh] sm:max-w-full bg-white dark:bg-[#181818]"
         ></div>
-        <div className="w-1/2"></div>
+        <div className="md:w-1/2 sm:min-w-full sm:h-[50vh] sm:max-w-full"></div>
       </div>
-      <div data-aos="fade-left" className="w-full h-screen flex flex-row">
-        <div className="w-1/2"></div>
-        <div className="w-1/2 bg-white dark:bg-[#181818]"></div>
+      <div data-aos="fade-left" className="w-full h-screen flex md:flex-row sm:flex-col">
+        <div className="md:w-1/2 sm:min-w-full sm:h-[50vh] sm:max-w-full"></div>
+        <div className="md:w-1/2 sm:min-w-full sm:h-[50vh] sm:max-w-full bg-white dark:bg-[#181818]"></div>
       </div>
-      <div className="w-full h-screen flex flex-row">
+      <div className="w-full h-screen flex md:flex-row sm:flex-col-reverse">
         <div
           data-aos="fade-right"
-          className="w-1/2 bg-white dark:bg-[#181818]"
+          className="md:w-1/2 sm:min-w-full sm:h-[50vh] sm:max-w-full bg-white dark:bg-[#181818]"
         ></div>
-        <div className="w-1/2"></div>
+        <div className="md:w-1/2 sm:min-w-full sm:h-[50vh] sm:max-w-full"></div>
       </div>
     </div>
   );
@@ -524,19 +526,23 @@ export const Power = () => {
   return (
     <div
       id="Power"
-      className="section snap-start shrink-0 w-full h-screen flex flex-col items-center pt-24 container z-[2] mx-auto relative"
+      className="section snap-start shrink-0 w-full h-screen flex flex-col items-center pt-24 md:container z-[2] mx-auto relative"
     >
-      <div className="w-1/3 text-center mt-3">
-        <h5 className="text-[--gold] text-3xl font-semibold">Lamborghini</h5>
-        <h1 className="text-7xl font-semibold">Centenario</h1>
+      <div className="lg:w-1/3 md:w-1/2 sm:w-[90%] text-center mt-3">
+        <h5 className="text-center text-[--gold] md:text-3xl sm:2xl font-semibold">
+          Lamborghini
+        </h5>
+        <h1 className="text-center md:text-7xl sm:text-5xl font-semibold">
+          Centenario
+        </h1>
       </div>
-      <div className="w-1/3 absolute bottom-[5vh]">
-        <ul className=" flex flex-row justify-between text-center my-6 px-8 py-4 bg-background rounded-full">
-          <li>
+      <div className="lg:w-1/3 md:w-1/2 sm:w-full absolute bottom-[5vh]">
+        <ul className="w-full flex flex-row flex-wrap md:justify-between sm:justify-center items-center text-center md:my-6 px-8 py-4 md:bg-background md:rounded-full sm:rounded-[10px]">
+          <li className="sm:mb-2">
             <h1 className="text-[--gold] text-sm font-semibold">POWER</h1>
             <p className="text-sm">770 CV / 566 kW</p>
           </li>
-          <li>
+          <li className="sm:mb-2">
             <h1 className="text-[--gold] text-sm font-semibold">MAX. SPEED</h1>
             <p className="text-sm">{`>350 km/h`}</p>
           </li>
@@ -554,17 +560,18 @@ export const Overview = () => {
   return (
     <div
       id="Overview"
-      className="section snap-start shrink-0 w-full h-screen flex flex-row items-center container z-[2] mx-auto"
+      className="section snap-start shrink-0 w-full h-screen flex md:flex-row sm:flex-col items-center md:container z-[2] md:mx-auto sm:px-[5%]"
     >
-      <div className="w-1/2 "></div>
+      <div className="md:w-1/2 sm:min-w-full sm:max-w-full sm:h-[50vh]"></div>
       <div
-        className="w-1/2 h-screen flex justify-center items-center text-pretty"
+        className="md:w-1/2 sm:min-w-full sm:max-w-full md:h-screen sm:h-[50vh] flex justify-center items-center text-pretty"
         data-aos="fade-left"
       >
-        <div className="max-w-[80%] h-fit px-8 py-5">
+        <div className="md:max-w-[80%] sm:max-h-[50vh] sm:w-full h-fit px-8 py-5 sm:p-0">
           <h1 className="text-[--gold] text-3xl font-semibold mb-6">
             OVERVIEW
           </h1>
+          <ScrollArea className="sm:max-h-[30vh] h-fit overflow-y-scroll">
           <p className="text-black dark:text-white mb-5">
             The Lamborghini Centenario exemplifies the innovative design and
             engineering skills of the House of the Raging Bull. The finest
@@ -572,6 +579,8 @@ export const Overview = () => {
             centenary of his birth, it is an homage to his vision and the future
             he believed in—a vision that we at Lamborghini still embrace.
           </p>
+          </ScrollArea>
+          
         </div>
       </div>
     </div>
@@ -582,31 +591,33 @@ export const Design = () => {
   return (
     <div
       id="Design"
-      className="section snap-start shrink-0 w-full h-screen flex flex-row justify-center items-center container z-[2] mx-auto"
+      className="section snap-start shrink-0 w-full h-screen flex md:flex-row sm:flex-col-reverse justify-center items-center md:container z-[2] md:mx-auto sm:px-[5%]"
     >
       <div
         data-aos="fade-right"
-        className="w-1/2 h-fit px-8 py-5 text-pretty flex items-center"
+        className="md:w-1/2 sm:min-w-full sm:max-w-full md:h-fit sm:h-[50vh] px-8 py-5 sm:p-0 text-pretty flex items-center justify-center"
       >
-        <div className="max-w-[80%] h-fit ">
+        <div className="md:max-w-[80%] sm:w-full sm:max-h-[40vh] sm:py-5 sm:my-5 h-fit ">
           <h1 className="text-[--gold] text-3xl font-semibold mb-6">DESIGN</h1>
-          <p className="text-black dark:text-white mb-5">
-            Here are the technical characteristics of the Lamborghini
-            Centenario: equipped with a 770 CV aspirated V12 engine springing
-            from 0 to 100 km/h in 2.8 seconds, the newly-born Lamborghini car
-            has been produced in a limited edition, for a total of 40 models: 20
-            Coupés and 20 Roadsters will be delivered to Lamborghini collectors
-            and fans starting from 2017.
-          </p>
-          <p className="text-black dark:text-white mb-5">
-            The Centenario has been conceived with the purpose of exploring new
-            technological and design opportunities, to look at the future
-            through the lens of innovation. One of the most exclusive (and
-            sought-after) cars in the whole world.
-          </p>
+          <ScrollArea className="sm:max-h-[30vh] md:h-fit overflow-y-scroll">
+            <p className="text-black dark:text-white mb-5">
+              Here are the technical characteristics of the Lamborghini
+              Centenario: equipped with a 770 CV aspirated V12 engine springing
+              from 0 to 100 km/h in 2.8 seconds, the newly-born Lamborghini car
+              has been produced in a limited edition, for a total of 40 models:
+              20 Coupés and 20 Roadsters will be delivered to Lamborghini
+              collectors and fans starting from 2017.
+            </p>
+            <p className="text-black dark:text-white mb-5">
+              The Centenario has been conceived with the purpose of exploring
+              new technological and design opportunities, to look at the future
+              through the lens of innovation. One of the most exclusive (and
+              sought-after) cars in the whole world.
+            </p>
+          </ScrollArea>
         </div>
       </div>
-      <div className="w-1/2 "></div>
+      <div className="md:w-1/2 sm:min-w-full sm:max-w-full  sm:h-[50vh]"></div>
     </div>
   );
 };
@@ -614,18 +625,18 @@ export const Specifications = () => {
   return (
     <div
       id="Specifications"
-      className="section snap-start shrink-0 w-full h-screen flex flex-row items-center container z-[2] mx-auto"
+      className="section snap-start shrink-0 w-full h-screen flex md:flex-row sm:flex-col items-center md:container z-[2] md:mx-auto sm:px-[5%]"
     >
-      <div className="w-1/2 "></div>
+      <div className="md:w-1/2 sm:min-w-full sm:max-w-full sm:h-[50vh] "></div>
       <div
         data-aos="fade-left"
-        className="w-1/2 h-screen px-8 py-5 flex flex-col justify-center items-center text-pretty"
+        className="md:w-1/2 sm:min-w-full sm:max-w-full md:h-screen sm:h-[50vh] px-8 py-5 sm:p-0 flex flex-col justify-center items-center text-pretty"
       >
-        <div className="max-w-[80%] h-fit ">
+        <div className="md:max-w-[80%] sm:w-full sm:max-h-[40vh] sm:py-5 sm:my-5 h-fit ">
           <h1 className="text-[--gold] text-3xl font-semibold mb-6">
             SPECIFICATIONS
           </h1>
-          <ScrollArea className="w-full max-h-[50vh]">
+          <ScrollArea className="w-full md:max-h-[40vh] sm:max-h-[30vh] overflow-y-scroll">
             <ul className="w-full text-sm text-pretty list-disc mb-5">
               <li className="w-full flex flex-row justify-between mb-4">
                 <span className="w-1/2 text-black dark:text-white font-semibold">
@@ -681,17 +692,17 @@ export const SteeringSuspension = () => {
   return (
     <div
       id="SteeringSuspension"
-      className="section snap-start shrink-0 w-full h-screen flex flex-row items-center container z-[2] mx-auto"
+      className="section snap-start shrink-0 w-full h-screen flex md:flex-row sm:flex-col-reverse items-center md:container z-[2] md:mx-auto sm:px-[5%]"
     >
       <div
         data-aos="fade-right"
-        className="w-1/2 h-screen px-8 py-5 flex flex-col justify-center items-center text-pretty"
+        className="md:w-1/2 sm:min-w-full sm:max-w-full md:h-screen sm:h-[50vh] px-8 py-5 sm:p-0 flex flex-col justify-center items-center text-pretty"
       >
-        <div className="max-w-[80%] h-fit ">
+        <div className="md:max-w-[80%] sm:w-full sm:max-h-[50vh] sm:py-5 sm:my-5 h-fit ">
           <h1 className="text-[--gold] text-3xl font-semibold mb-6">
             STEERING AND SUSPENSION
           </h1>
-          <ScrollArea className="w-full max-h-[50vh]">
+          <ScrollArea className="w-full md:max-h-[50vh] sm:max-h-[30vh] overflow-y-scroll">
             <ul className="w-full text-sm text-pretty list-disc mb-5">
               <li className="w-full flex flex-row justify-between mb-4">
                 <span className="w-[35%] text-black dark:text-white font-semibold">
@@ -739,7 +750,7 @@ export const SteeringSuspension = () => {
           </ScrollArea>
         </div>
       </div>
-      <div className="w-1/2 "></div>
+      <div className="md:w-1/2 sm:min-w-full sm:max-w-full sm:h-[50vh]"></div>
     </div>
   );
 };
@@ -747,16 +758,16 @@ export const Engine = () => {
   return (
     <div
       id="Engine"
-      className="section snap-start shrink-0 w-full h-screen flex flex-row items-center container z-[2] mx-auto"
+      className="section snap-start shrink-0 w-full h-screen flex md:flex-row sm:flex-col items-center md:container z-[2] md:mx-auto sm:px-[5%]"
     >
-      <div className="w-1/2 "></div>
+      <div className="md:w-1/2 sm:min-w-full sm:max-w-full sm:h-[50vh] "></div>
       <div
         data-aos="fade-left"
-        className="w-1/2 h-screen px-8 py-5 flex flex-col justify-center items-center text-pretty"
+        className="md:w-1/2 sm:min-w-full sm:max-w-full md:h-screen sm:h-[50vh] px-8 py-5 sm:p-0 flex flex-col justify-center items-center text-pretty"
       >
-        <div className="max-w-[80%] h-fit ">
+        <div className="md:max-w-[80%] sm:w-full sm:max-h-[40vh] sm:py-5 sm:my-5 h-fit ">
           <h1 className="text-[--gold] text-3xl font-semibold mb-6">ENGINE</h1>
-          <ScrollArea className="w-full max-h-[50vh]">
+          <ScrollArea className="w-full md:max-h-[50vh] sm:max-h-[30vh] overflow-y-scroll">
             <ul className="w-full text-sm text-pretty list-disc mb-5">
               <li className="w-full flex flex-row justify-between mb-4">
                 <span className="w-1/2 text-black dark:text-white font-semibold">
@@ -841,15 +852,15 @@ export const Wheels = () => {
   return (
     <div
       id="Wheels"
-      className="section snap-end shrink-0 w-full h-screen flex flex-row items-center container z-[2] mx-auto"
+      className="section snap-end shrink-0 w-full h-screen flex md:flex-row sm:flex-col-reverse items-center md:container z-[2] md:mx-auto sm:px-[5%]"
     >
       <div
         data-aos="fade-right"
-        className="w-1/2 h-screen px-8 py-5 flex flex-col justify-center items-center text-pretty"
+        className="md:w-1/2 sm:min-w-full sm:max-w-full md:h-screen sm:h-[50vh] px-8 py-5 sm:p-0 flex flex-col justify-center items-center text-pretty"
       >
-        <div className="max-w-[80%] h-fit ">
+        <div className="md:max-w-[80%] sm:w-full sm:max-h-[40vh] sm:py-5 sm:my-5 h-fit ">
           <h1 className="text-[--gold] text-3xl font-semibold mb-6">WHEELS</h1>
-          <ScrollArea className="w-full max-h-[50vh]">
+          <ScrollArea className="w-full md:max-h-[50vh] sm:max-h-[30vh] overflow-y-scroll">
             <ul className="w-full text-sm text-pretty list-disc mb-5">
               <li className="w-full flex flex-row justify-between mb-4">
                 <span className="w-1/2 text-black dark:text-white font-semibold">
@@ -887,11 +898,15 @@ export const Wheels = () => {
           </ScrollArea>
         </div>
       </div>
-      <div className="w-1/2 "></div>
+      <div className="md:w-1/2 sm:min-w-full sm:max-w-full "></div>
     </div>
   );
 };
-export const Footer = () => {
+
+type Footer = {
+  lastComponent: string;
+};
+export const Footer = ({ lastComponent }: Footer) => {
   const d = new Date();
   const year = d.getFullYear();
 
@@ -914,19 +929,59 @@ export const Footer = () => {
     },
   ];
 
+  // Show Footer at the end
+  useEffect(() => {
+    const container = document.getElementById("container");
+    const section = document.querySelectorAll(".section");
+
+    container?.addEventListener("scroll", () => {
+      section.forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top <= window.innerHeight / 2) {
+          switch (el.id === lastComponent) {
+            case true:
+              $("#Footer").removeClass("hidden");
+              break;
+            case false:
+              $("#Footer").addClass("hidden");
+              break;
+
+            default:
+              break;
+          }
+        }
+      });
+    });
+  }, []);
+
   return (
-    <footer className="container mx-auto w-full p-4 border-t border-gray-200">
+    <footer
+      id="Footer"
+      className="container mx-auto lg:px-[3%] md:px-[5%] w-full p-4 border-t border-gray-200 sticky bottom-0 left-0 right-0 hidden"
+    >
       <div className="flex md:flex-row sm:flex-col md:justify-between  md:items-center">
-        <p className="text-gray-600 sm:text-center sm:mb-2">
-          &copy; {year} Future Project
+        <p className="text-black dark:text-white sm:text-center sm:mb-2">
+          &copy; {year} Lamborghini
         </p>
         <div className="flex flex-row flex-wrap sm:justify-between items-center text-gray-600 sm:text-[14px]">
-          <Dialog title="Copyright" dataList={copyright} space={true} />
+          <Dialog
+            title="Copyright"
+            dataList={copyright}
+            space={true}
+            textBTNcolor="text-black dark:text-white"
+          />
           <span className="mx-6 md:block sm:hidden">|</span>
-          <Dialog title="Privacy Policy" dataList={policy} />
+          <Dialog
+            title="Privacy Policy"
+            dataList={policy}
+            textBTNcolor="text-black dark:text-white"
+          />
           <span className="mx-6 md:block sm:hidden">|</span>
           <div className="w-fit flex flex-row items-center">
-            <a href="#" className="text-gray-600">
+            <a
+              href="#"
+              className="lg:text-white md:text-black m dark:text-white"
+            >
               <i className="facebook">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -941,7 +996,10 @@ export const Footer = () => {
               </i>
             </a>
 
-            <a href="#" className="text-gray-600 ml-4">
+            <a
+              href="#"
+              className="lg:text-white md:text-black dark:text-white ml-4"
+            >
               <i className="youtube ">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -1019,112 +1077,112 @@ export const Container3D = () => {
   const positionObject_MD_Portrait: PositionObject = [
     {
       id: "Power",
-      position: { x: 1.5, y: 3, z: 0 },
-      rotation: { x: 0, y: -1, z: 0 },
+      position: { x: 0.2, y: -0.7, z: 8 },
+      rotation: { x: 0, y: -0.5, z: 0 },
     },
     {
       id: "Overview",
-      position: { x: -2, y: 0.5, z: 0 },
-      rotation: { x: 1, y: -0.5, z: 0 },
+      position: { x: 0, y: -0.5, z: 11 },
+      rotation: { x: 0.1, y: 0, z: 0 },
     },
     {
       id: "Design",
-      position: { x: 1.7, y: 1, z: 0 },
-      rotation: { x: 0, y: 1, z: 0 },
+      position: { x: 1.8, y: -0.5, z: 5 },
+      rotation: { x: 0.4, y: 0.5, z: 0 },
     },
     {
       id: "Specifications",
-      position: { x: 1, y: -0.5, z: 0 },
-      rotation: { x: 0, y: -1, z: 0 },
+      position: { x: -2, y: -0.5, z: 5 },
+      rotation: { x: 0.4, y: -0.5, z: 0 },
     },
     {
       id: "SteeringSuspension",
-      position: { x: 1, y: -0.5, z: 0 },
-      rotation: { x: 0, y: -1, z: 0 },
+      position: { x: 0.8, y: -0.7, z: 13 },
+      rotation: { x: 0, y: -2.4, z: 0 },
     },
     {
       id: "Engine",
-      position: { x: 1, y: -0.5, z: 0 },
-      rotation: { x: 0, y: -1, z: 0 },
+      position: { x: -1.8, y: -0.4, z: 10.5 },
+      rotation: { x: 0.4, y: 4, z: 0 },
     },
     {
       id: "Wheels",
-      position: { x: 1, y: -0.5, z: 0 },
-      rotation: { x: 0, y: -1, z: 0 },
+      position: { x: 1.35, y: -0.5, z: 12 },
+      rotation: { x: 0, y: -3, z: 0 },
     },
   ];
   const positionObject_MD: PositionObject = [
     {
       id: "Power",
-      position: { x: 1.5, y: 3, z: 0 },
-      rotation: { x: 0, y: -1, z: 0 },
+      position: { x: 0.2, y: -0.7, z: 8 },
+      rotation: { x: 0, y: -0.5, z: 0 },
     },
     {
       id: "Overview",
-      position: { x: -2, y: 0.5, z: 0 },
-      rotation: { x: 1, y: -0.5, z: 0 },
+      position: { x: 0, y: -0.5, z: 11 },
+      rotation: { x: 0.1, y: 0, z: 0 },
     },
     {
       id: "Design",
-      position: { x: 1.7, y: 1, z: 0 },
-      rotation: { x: 0, y: 1, z: 0 },
+      position: { x: 1.8, y: -0.5, z: 5 },
+      rotation: { x: 0.4, y: 0.5, z: 0 },
     },
     {
       id: "Specifications",
-      position: { x: 1, y: -0.5, z: 0 },
-      rotation: { x: 0, y: -1, z: 0 },
+      position: { x: -2, y: -0.5, z: 5 },
+      rotation: { x: 0.4, y: -0.5, z: 0 },
     },
     {
       id: "SteeringSuspension",
-      position: { x: 1, y: -0.5, z: 0 },
-      rotation: { x: 0, y: -1, z: 0 },
+      position: { x: 0.8, y: -0.7, z: 13 },
+      rotation: { x: 0, y: -2.4, z: 0 },
     },
     {
       id: "Engine",
-      position: { x: 1, y: -0.5, z: 0 },
-      rotation: { x: 0, y: -1, z: 0 },
+      position: { x: -1.8, y: -0.4, z: 10.5 },
+      rotation: { x: 0.4, y: 4, z: 0 },
     },
     {
       id: "Wheels",
-      position: { x: 1, y: -0.5, z: 0 },
-      rotation: { x: 0, y: -1, z: 0 },
+      position: { x: 1.35, y: -0.5, z: 12 },
+      rotation: { x: 0, y: -3, z: 0 },
     },
   ];
   const positionObject_SM: PositionObject = [
     {
       id: "Power",
-      position: { x: 0, y: -2, z: 0 },
-      rotation: { x: 0, y: -1, z: 0 },
+      position: { x: 0, y: -0.1, z: 4.5 },
+      rotation: { x: 1, y: 3.14, z: 0 },
     },
     {
       id: "Overview",
-      position: { x: 0, y: -4, z: 0 },
-      rotation: { x: -1, y: 3, z: 1 },
+      position: { x: 0, y: 1, z: 8 },
+      rotation: { x: 0.5, y: 0, z: 0 },
     },
     {
       id: "Design",
-      position: { x: 0, y: -3, z: 0 },
-      rotation: { x: 0, y: 1.5, z: 0 },
+      position: { x: -0.5, y: 0.55, z: 8 },
+      rotation: { x: 0.4, y: 1, z: 0 },
     },
     {
       id: "Specifications",
-      position: { x: 1.5, y: -1, z: 0 },
-      rotation: { x: 0, y: -1, z: 0 },
+      position: { x: 0, y: 1, z: 7 },
+      rotation: { x: 0.4, y: -1, z: 0 },
     },
     {
       id: "SteeringSuspension",
-      position: { x: 1.5, y: -1, z: 0 },
-      rotation: { x: 0, y: -1, z: 0 },
+      position: { x: 0.5, y: -0.5, z: 13 },
+      rotation: { x: 0.1, y: -2.4, z: 0 },
     },
     {
       id: "Engine",
-      position: { x: 1.5, y: -1, z: 0 },
-      rotation: { x: 0, y: -1, z: 0 },
+      position: { x: -1.1, y: 0.1, z: 11 },
+      rotation: { x: 0.4, y: 4, z: 0 },
     },
     {
       id: "Wheels",
-      position: { x: 1.5, y: -1, z: 0 },
-      rotation: { x: 0, y: -1, z: 0 },
+      position: { x: -0.5, y: 0.5, z: 11 },
+      rotation: { x: 0.4, y: 4, z: 0 },
     },
   ];
 
@@ -1307,6 +1365,8 @@ export const Container3D = () => {
       if (positionActive >= 0 && carRef.current !== null) {
         const newCordinate = position3DModel();
 
+        console.log(newCordinate);
+
         gsap.to(carRef.current.position, {
           y: newCordinate?.position.y,
           x: newCordinate?.position.x,
@@ -1377,8 +1437,10 @@ export const Container3D = () => {
     // Debounced resize handler
     const handleResize = () => {
       if (resizeTimeout.current) clearTimeout(resizeTimeout.current);
+
       resizeTimeout.current = setTimeout(() => {
         if (cameraRef.current && rendererRef.current) {
+          console.log("Resize");
           cameraRef.current.aspect = window.innerWidth / window.innerHeight;
           cameraRef.current.updateProjectionMatrix();
           rendererRef.current.setSize(window.innerWidth, window.innerHeight);
