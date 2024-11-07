@@ -39,10 +39,11 @@ export default function HomeLanding() {
   const [count, setCount] = useState(1);
 
   // Register Service worker
+  const url = process.env.NODE_ENV === "development" ? "" : "/Lamborghini";
   useEffect(() => {
-    const url = process.env.NODE_ENV === "development" ? "" : "/Lamborghini";
+    if(!url)return
     if ("serviceWorker" in navigator) {
-      const swURL =  `${url}/sw.js`; //change "/Lamborghini/sw.js" for production
+      const swURL = `${url}/sw.js`; //change "/Lamborghini/sw.js" for production
       const swScope = `${url}/`; // change "/Lamborghini/" for production
 
       window.addEventListener("load", async () => {
@@ -89,7 +90,7 @@ export default function HomeLanding() {
         );
       };
     }
-  }, []);
+  }, [url]);
 
   // Show Hide
   const [isLoadOver, setisLoadOver] = useState<boolean>(false);
