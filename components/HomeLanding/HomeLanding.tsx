@@ -1,11 +1,5 @@
 "use client";
-import React, {
-  useState,
-  useEffect,
-  Suspense,
-  useRef,
-  Fragment,
-} from "react";
+import React, { useState, useEffect, Suspense, useRef, Fragment } from "react";
 import useThemeMode from "@/tool/useThemeMode/useThemeMode";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
@@ -46,63 +40,7 @@ export default function HomeLanding() {
 
   // Register Service worker
   const url = process.env.NODE_ENV === "development" ? "" : "/Lamborghini";
-  // useLayoutEffect(() => {
-  //   if (!url) return;
-  //   console.log("registering service worker");
-  //   if ("serviceWorker" in navigator) {
-  //     const swURL = `${url}/sw.js`; //change "/Lamborghini/sw.js" for production
-  //     const swScope = `${url}/`; // change "/Lamborghini/" for production
-
-  //     window.addEventListener("load", async () => {
-  //       console.log("window loaded");
-  //       const registerSW = await navigator.serviceWorker.register(swURL, {
-  //         scope: swScope,
-  //       });
-
-  //       // Hit on First time registration
-  //       if (registerSW.installing) {
-  //         console.log("installing");
-  //         registerSW.installing?.addEventListener("statechange", (e) => {
-  //           const target = e.target as ServiceWorker;
-  //           if (target.state === "activated") {
-  //             window.location.reload();
-  //           }
-  //         });
-  //       }
-
-  //       // Send message on first reload
-  //       if (registerSW.active) {
-  //         registerSW.active.postMessage({ type: "CHECK_CACHE_STATUS" });
-  //       }
-  //     });
-
-  //     // Listen for messages from the service worker
-  //     function handleServiceWorkerMessage(event: MessageEvent) {
-  //       if (event.data && event.data.type === "CACHE_PROGRESS") {
-  //         setCount(event.data.progress);
-  //       } else if (event.data && event.data.type === "CACHE_COMPLETE") {
-  //         setCount(100);
-  //       }
-  //     }
-
-  //     // Add the event listener for service worker messages
-  //     navigator.serviceWorker.addEventListener(
-  //       "message",
-  //       handleServiceWorkerMessage
-  //     );
-
-  //     // On component unmount, remove the event listener
-  //     return () => {
-  //       navigator.serviceWorker.removeEventListener(
-  //         "message",
-  //         handleServiceWorkerMessage
-  //       );
-  //     };
-  //   }
-  // }, [url]);
   useEffect(() => {
-    if (!url) return;
-    console.log("registering service worker");
     if ("serviceWorker" in navigator) {
       const swURL = `${url}/sw.js`;
       const swScope = `${url}/`;
@@ -112,14 +50,15 @@ export default function HomeLanding() {
           const registerSW = await navigator.serviceWorker.register(swURL, {
             scope: swScope,
           });
-          console.log("Service Worker registered");
 
           if (registerSW.installing) {
             console.log("installing");
             registerSW.installing?.addEventListener("statechange", (e) => {
               const target = e.target as ServiceWorker;
               if (target.state === "activated") {
-                window.location.reload();
+                setTimeout(() => {
+                  window.location.reload();
+                }, 1000);
               }
             });
           }
@@ -198,16 +137,15 @@ export default function HomeLanding() {
       id="container"
       className="w-full h-screen flex flex-col overflow-y-scroll snap-y snap-mandatory relative"
     >
-      {/* Fixed Navigation */}
-      <div className="fixed top-0 w-full z-10">
-        <Navigation />
-      </div>
-
       <Loading number={count} />
 
       {/* Snap Sections with margin to offset from the fixed navbar */}
       {isLoadOver === true && (
         <Fragment>
+          {/* Fixed Navigation */}
+          <div className="fixed top-0 w-full z-10">
+            <Navigation />
+          </div>
           <Container3D />
           <CarBlockContainer />
           <Power />
@@ -525,6 +463,13 @@ export const Loading = ({ number }: Loading) => {
       className={`w-full h-screen flex justify-center items-center z-49 bg-background `}
     >
       <div className="w-1/3 mx-auto flex flex-col items-center">
+        <Image
+          src={`${baseurl + "asset/logo.svg"}`}
+          width={40*3}
+          height={42*3}
+          alt="logo"
+          className="w-[120px] h-[128px] mb-4"
+        />
         <h1 className="text-black dark:text-white text-sm font-semibold">
           Loading
         </h1>
@@ -544,47 +489,47 @@ export const CarBlockContainer = () => {
   return (
     <div className="w-full h-screen absolute top-0 left-0 right-0 bottom-0 bg-transparent z-1">
       <div className="w-full h-screen"></div>
-      <div className="w-full h-screen flex  md:flex-row sm:flex-col">
-        <div className="md:w-1/2 sm:min-w-full sm:h-[50vh] sm:max-w-full"></div>
+      <div className="w-full h-screen flex lg:flex-row md:flex-row sm:flex-col">
+        <div className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full"></div>
         <div
           data-aos="fade-left"
-          className="md:w-1/2 sm:min-w-full sm:h-[50vh] sm:max-w-full bg-white dark:bg-[#181818]"
+          className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white dark:bg-[#181818]"
         ></div>
       </div>
-      <div className="w-full h-screen flex md:flex-row sm:flex-col-reverse">
+      <div className="w-full h-screen flex lg:flex-row md:flex-row sm:flex-col-reverse">
         <div
           data-aos="fade-right"
-          className="md:w-1/2 sm:min-w-full sm:h-[50vh] sm:max-w-full bg-white dark:bg-[#181818]"
+          className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white dark:bg-[#181818]"
         ></div>
-        <div className="md:w-1/2 sm:min-w-full sm:h-[50vh] sm:max-w-full"></div>
+        <div className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full"></div>
       </div>
-      <div className="w-full h-screen flex md:flex-row sm:flex-col">
-        <div className="md:w-1/2 sm:min-w-full sm:h-[50vh] sm:max-w-full"></div>
+      <div className="w-full h-screen flex lg:flex-row md:flex-row sm:flex-col">
+        <div className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full"></div>
         <div
           data-aos="fade-left"
-          className="md:w-1/2 sm:min-w-full sm:h-[50vh] sm:max-w-full bg-white dark:bg-[#181818]"
+          className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white dark:bg-[#181818]"
         ></div>
       </div>
-      <div className="w-full h-screen flex md:flex-row sm:flex-col-reverse">
+      <div className="w-full h-screen flex lg:flex-row md:flex-row sm:flex-col-reverse">
         <div
           data-aos="fade-right"
-          className="md:w-1/2 sm:min-w-full sm:h-[50vh] sm:max-w-full bg-white dark:bg-[#181818]"
+          className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white dark:bg-[#181818]"
         ></div>
-        <div className="md:w-1/2 sm:min-w-full sm:h-[50vh] sm:max-w-full"></div>
+        <div className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full"></div>
       </div>
-      <div
-        data-aos="fade-left"
-        className="w-full h-screen flex md:flex-row sm:flex-col"
-      >
-        <div className="md:w-1/2 sm:min-w-full sm:h-[50vh] sm:max-w-full"></div>
-        <div className="md:w-1/2 sm:min-w-full sm:h-[50vh] sm:max-w-full bg-white dark:bg-[#181818]"></div>
+      <div className="w-full h-screen flex lg:flex-row md:flex-row sm:flex-col">
+        <div className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full"></div>
+        <div
+          data-aos="fade-left"
+          className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white dark:bg-[#181818]"
+        ></div>
       </div>
-      <div className="w-full h-screen flex md:flex-row sm:flex-col-reverse">
+      <div className="w-full h-screen flex lg:flex-row md:flex-row sm:flex-col-reverse">
         <div
           data-aos="fade-right"
-          className="md:w-1/2 sm:min-w-full sm:h-[50vh] sm:max-w-full bg-white dark:bg-[#181818]"
+          className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white dark:bg-[#181818]"
         ></div>
-        <div className="md:w-1/2 sm:min-w-full sm:h-[50vh] sm:max-w-full"></div>
+        <div className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full"></div>
       </div>
     </div>
   );
@@ -594,9 +539,9 @@ export const Power = () => {
   return (
     <div
       id="Power"
-      className="section snap-start shrink-0 w-full h-screen flex flex-col items-center pt-24 md:container z-[2] mx-auto relative"
+      className="section snap-start shrink-0 w-full h-screen flex flex-col items-center md:container z-[2] mx-auto relative"
     >
-      <div className="lg:w-1/3 md:w-1/2 sm:w-[90%] text-center mt-3">
+      <div className="lg:w-1/3 md:w-1/2 sm:w-[90%] text-center mt-24">
         <h5 className="text-center text-[--gold] md:text-3xl sm:2xl font-semibold">
           Lamborghini
         </h5>
@@ -606,15 +551,15 @@ export const Power = () => {
       </div>
       <div className="lg:w-1/3 md:w-1/2 sm:w-full absolute bottom-[5vh]">
         <ul className="w-full flex flex-row flex-wrap md:justify-between sm:justify-center items-center text-center md:my-6 px-8 py-4 md:bg-background md:rounded-full sm:rounded-[10px]">
-          <li className="sm:mb-2">
+          <li className="md:w-1/3 sm:w-1/2 sm:mb-4">
             <h1 className="text-[--gold] text-sm font-semibold">POWER</h1>
             <p className="text-sm">770 CV / 566 kW</p>
           </li>
-          <li className="sm:mb-2">
+          <li className="md:w-1/3 sm:w-1/2 sm:mb-4">
             <h1 className="text-[--gold] text-sm font-semibold">MAX. SPEED</h1>
             <p className="text-sm">{`>350 km/h`}</p>
           </li>
-          <li>
+          <li className="md:w-1/3 sm:w-1/2 sm:mb-4">
             <h1 className="text-[--gold] text-sm font-semibold">0-100 km/h</h1>
             <p className="text-sm">{`<2,9 s`}</p>
           </li>
@@ -628,14 +573,14 @@ export const Overview = () => {
   return (
     <div
       id="Overview"
-      className="section snap-start shrink-0 w-full h-screen flex md:flex-row sm:flex-col items-center md:container z-[2] md:mx-auto sm:px-[5%]"
+      className="section snap-start shrink-0 w-full h-screen flex lg:flex-row md:flex-row sm:flex-col items-center md:container z-[2] md:mx-auto sm:px-[5%]"
     >
-      <div className="md:w-1/2 sm:min-w-full sm:max-w-full sm:h-[50vh]"></div>
+      <div className="md:w-1/2 sm:w-full sm:h-[50vh]"></div>
       <div
-        className="md:w-1/2 sm:min-w-full sm:max-w-full md:h-screen sm:h-[50vh] flex justify-center items-center text-pretty"
+        className="md:w-1/2 sm:w-full md:h-screen sm:h-[50vh] flex justify-center md:items-center text-pretty"
         data-aos="fade-left"
       >
-        <div className="md:max-w-[80%] sm:max-h-[50vh] sm:w-full h-fit px-8 py-5 sm:p-0">
+        <div className="md:max-w-[80%] sm:max-h-[50vh] sm:w-full h-fit px-8 my-5 sm:p-0">
           <h1 className="text-[--gold] text-3xl font-semibold mb-6">
             OVERVIEW
           </h1>
@@ -659,13 +604,13 @@ export const Design = () => {
   return (
     <div
       id="Design"
-      className="section snap-start shrink-0 w-full h-screen flex md:flex-row sm:flex-col-reverse justify-center items-center md:container z-[2] md:mx-auto sm:px-[5%]"
+      className="section snap-start shrink-0 w-full h-screen flex lg:flex-row md:flex-row sm:flex-col-reverse justify-center items-center md:container z-[2] md:mx-auto sm:px-[5%]"
     >
       <div
         data-aos="fade-right"
-        className="md:w-1/2 sm:min-w-full sm:max-w-full md:h-fit sm:h-[50vh] px-8 py-5 sm:p-0 text-pretty flex items-center justify-center"
+        className="md:w-1/2 sm:w-full md:h-fit sm:h-[50vh] px-8 my-5 sm:p-0 text-pretty flex md:items-center justify-center"
       >
-        <div className="md:max-w-[80%] sm:w-full sm:max-h-[40vh] sm:py-5 sm:my-5 h-fit ">
+        <div className="md:max-w-[80%] sm:w-full sm:max-h-[40vh] sm:my-5 h-fit ">
           <h1 className="text-[--gold] text-3xl font-semibold mb-6">DESIGN</h1>
           <ScrollArea className="sm:max-h-[30vh] md:h-fit overflow-y-scroll">
             <p className="text-black dark:text-white mb-5">
@@ -685,7 +630,7 @@ export const Design = () => {
           </ScrollArea>
         </div>
       </div>
-      <div className="md:w-1/2 sm:min-w-full sm:max-w-full  sm:h-[50vh]"></div>
+      <div className="md:w-1/2 sm:w-full  sm:h-[50vh]"></div>
     </div>
   );
 };
@@ -695,12 +640,12 @@ export const Specifications = () => {
       id="Specifications"
       className="section snap-start shrink-0 w-full h-screen flex md:flex-row sm:flex-col items-center md:container z-[2] md:mx-auto sm:px-[5%]"
     >
-      <div className="md:w-1/2 sm:min-w-full sm:max-w-full sm:h-[50vh] "></div>
+      <div className="md:w-1/2 sm:w-full sm:h-[50vh] "></div>
       <div
         data-aos="fade-left"
-        className="md:w-1/2 sm:min-w-full sm:max-w-full md:h-screen sm:h-[50vh] px-8 py-5 sm:p-0 flex flex-col justify-center items-center text-pretty"
+        className="md:w-1/2 sm:w-full md:h-screen sm:h-[50vh] px-8 py-5 sm:p-0 flex justify-center md:items-center text-pretty"
       >
-        <div className="md:max-w-[80%] sm:w-full sm:max-h-[40vh] sm:py-5 sm:my-5 h-fit ">
+        <div className="md:max-w-[80%] sm:w-full sm:max-h-[40vh] sm:my-5 h-fit ">
           <h1 className="text-[--gold] text-3xl font-semibold mb-6">
             SPECIFICATIONS
           </h1>
@@ -764,9 +709,9 @@ export const SteeringSuspension = () => {
     >
       <div
         data-aos="fade-right"
-        className="md:w-1/2 sm:min-w-full sm:max-w-full md:h-screen sm:h-[50vh] px-8 py-5 sm:p-0 flex flex-col justify-center items-center text-pretty"
+        className="md:w-1/2 sm:w-full md:h-screen sm:h-[50vh] px-8 py-5 sm:p-0 flex md:items-center text-pretty"
       >
-        <div className="md:max-w-[80%] sm:w-full sm:max-h-[50vh] sm:py-5 sm:my-5 h-fit ">
+        <div className="md:max-w-[80%] sm:w-full sm:max-h-[50vh] sm:my-5 h-fit ">
           <h1 className="text-[--gold] text-3xl font-semibold mb-6">
             STEERING AND SUSPENSION
           </h1>
@@ -818,7 +763,7 @@ export const SteeringSuspension = () => {
           </ScrollArea>
         </div>
       </div>
-      <div className="md:w-1/2 sm:min-w-full sm:max-w-full sm:h-[50vh]"></div>
+      <div className="md:w-1/2 sm:w-full sm:h-[50vh]"></div>
     </div>
   );
 };
@@ -828,12 +773,12 @@ export const Engine = () => {
       id="Engine"
       className="section snap-start shrink-0 w-full h-screen flex md:flex-row sm:flex-col items-center md:container z-[2] md:mx-auto sm:px-[5%]"
     >
-      <div className="md:w-1/2 sm:min-w-full sm:max-w-full sm:h-[50vh] "></div>
+      <div className="md:w-1/2 sm:w-full sm:h-[50vh] "></div>
       <div
         data-aos="fade-left"
-        className="md:w-1/2 sm:min-w-full sm:max-w-full md:h-screen sm:h-[50vh] px-8 py-5 sm:p-0 flex flex-col justify-center items-center text-pretty"
+        className="md:w-1/2 sm:w-full md:h-screen sm:h-[50vh] px-8 py-5 sm:p-0 flex justify-center md:items-center text-pretty"
       >
-        <div className="md:max-w-[80%] sm:w-full sm:max-h-[40vh] sm:py-5 sm:my-5 h-fit ">
+        <div className="md:max-w-[80%] sm:w-full sm:max-h-[40vh] sm:my-5 h-fit ">
           <h1 className="text-[--gold] text-3xl font-semibold mb-6">ENGINE</h1>
           <ScrollArea className="w-full md:max-h-[50vh] sm:max-h-[30vh] overflow-y-scroll">
             <ul className="w-full text-sm text-pretty list-disc mb-5">
@@ -924,9 +869,9 @@ export const Wheels = () => {
     >
       <div
         data-aos="fade-right"
-        className="md:w-1/2 sm:min-w-full sm:max-w-full md:h-screen sm:h-[50vh] px-8 py-5 sm:p-0 flex flex-col justify-center items-center text-pretty"
+        className="md:w-1/2 sm:w-full md:h-screen sm:h-[50vh] px-8 py-5 sm:p-0 flex justify-center md:items-center text-pretty"
       >
-        <div className="md:max-w-[80%] sm:w-full sm:max-h-[40vh] sm:py-5 sm:my-5 h-fit ">
+        <div className="md:max-w-[80%] sm:w-full sm:max-h-[40vh] sm:my-5 h-fit ">
           <h1 className="text-[--gold] text-3xl font-semibold mb-6">WHEELS</h1>
           <ScrollArea className="w-full md:max-h-[50vh] sm:max-h-[30vh] overflow-y-scroll">
             <ul className="w-full text-sm text-pretty list-disc mb-5">
@@ -966,7 +911,7 @@ export const Wheels = () => {
           </ScrollArea>
         </div>
       </div>
-      <div className="md:w-1/2 sm:min-w-full sm:max-w-full "></div>
+      <div className="md:w-1/2 sm:w-full "></div>
     </div>
   );
 };
@@ -1219,7 +1164,7 @@ export const Container3D = () => {
   const positionObject_SM: PositionObject = [
     {
       id: "Power",
-      position: { x: 0, y: -0.1, z: 4.5 },
+      position: { x: 0, y: 0.1, z: 4.5 },
       rotation: { x: 1, y: 3.14, z: 0 },
     },
     {
