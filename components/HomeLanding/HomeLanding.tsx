@@ -41,9 +41,10 @@ export default function HomeLanding() {
   // Register Service worker
   useEffect(() => {
     if (!baseurl) return;
+    const url = process.env.NODE_ENV === "development" ? "" : "/Lamborghini";
     if ("serviceWorker" in navigator) {
-      const swURL = "/Lamborghini/sw.js"; //change "/Lamborghini/sw.js" for production
-      const swScope = "/Lamborghini/"; // change "/Lamborghini/" for production
+      const swURL =  `${url}/sw.js`; //change "/Lamborghini/sw.js" for production
+      const swScope = `${url}/`; // change "/Lamborghini/" for production
 
       window.addEventListener("load", async () => {
         const registerSW = await navigator.serviceWorker.register(swURL, {
@@ -507,7 +508,10 @@ export const CarBlockContainer = () => {
         ></div>
         <div className="md:w-1/2 sm:min-w-full sm:h-[50vh] sm:max-w-full"></div>
       </div>
-      <div data-aos="fade-left" className="w-full h-screen flex md:flex-row sm:flex-col">
+      <div
+        data-aos="fade-left"
+        className="w-full h-screen flex md:flex-row sm:flex-col"
+      >
         <div className="md:w-1/2 sm:min-w-full sm:h-[50vh] sm:max-w-full"></div>
         <div className="md:w-1/2 sm:min-w-full sm:h-[50vh] sm:max-w-full bg-white dark:bg-[#181818]"></div>
       </div>
@@ -572,15 +576,15 @@ export const Overview = () => {
             OVERVIEW
           </h1>
           <ScrollArea className="sm:max-h-[30vh] h-fit overflow-y-scroll">
-          <p className="text-black dark:text-white mb-5">
-            The Lamborghini Centenario exemplifies the innovative design and
-            engineering skills of the House of the Raging Bull. The finest
-            possible tribute to our founder Ferruccio Lamborghini on the
-            centenary of his birth, it is an homage to his vision and the future
-            he believed in—a vision that we at Lamborghini still embrace.
-          </p>
+            <p className="text-black dark:text-white mb-5">
+              The Lamborghini Centenario exemplifies the innovative design and
+              engineering skills of the House of the Raging Bull. The finest
+              possible tribute to our founder Ferruccio Lamborghini on the
+              centenary of his birth, it is an homage to his vision and the
+              future he believed in—a vision that we at Lamborghini still
+              embrace.
+            </p>
           </ScrollArea>
-          
         </div>
       </div>
     </div>
