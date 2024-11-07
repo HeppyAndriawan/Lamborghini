@@ -1,5 +1,11 @@
 "use client";
-import React, { useState, useEffect,useLayoutEffect, Suspense, useRef, Fragment } from "react";
+import React, {
+  useState,
+  useEffect,
+  Suspense,
+  useRef,
+  Fragment,
+} from "react";
 import useThemeMode from "@/tool/useThemeMode/useThemeMode";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
@@ -40,58 +46,114 @@ export default function HomeLanding() {
 
   // Register Service worker
   const url = process.env.NODE_ENV === "development" ? "" : "/Lamborghini";
-  useLayoutEffect(() => {
-    if(!url)return
+  // useLayoutEffect(() => {
+  //   if (!url) return;
+  //   console.log("registering service worker");
+  //   if ("serviceWorker" in navigator) {
+  //     const swURL = `${url}/sw.js`; //change "/Lamborghini/sw.js" for production
+  //     const swScope = `${url}/`; // change "/Lamborghini/" for production
+
+  //     window.addEventListener("load", async () => {
+  //       console.log("window loaded");
+  //       const registerSW = await navigator.serviceWorker.register(swURL, {
+  //         scope: swScope,
+  //       });
+
+  //       // Hit on First time registration
+  //       if (registerSW.installing) {
+  //         console.log("installing");
+  //         registerSW.installing?.addEventListener("statechange", (e) => {
+  //           const target = e.target as ServiceWorker;
+  //           if (target.state === "activated") {
+  //             window.location.reload();
+  //           }
+  //         });
+  //       }
+
+  //       // Send message on first reload
+  //       if (registerSW.active) {
+  //         registerSW.active.postMessage({ type: "CHECK_CACHE_STATUS" });
+  //       }
+  //     });
+
+  //     // Listen for messages from the service worker
+  //     function handleServiceWorkerMessage(event: MessageEvent) {
+  //       if (event.data && event.data.type === "CACHE_PROGRESS") {
+  //         setCount(event.data.progress);
+  //       } else if (event.data && event.data.type === "CACHE_COMPLETE") {
+  //         setCount(100);
+  //       }
+  //     }
+
+  //     // Add the event listener for service worker messages
+  //     navigator.serviceWorker.addEventListener(
+  //       "message",
+  //       handleServiceWorkerMessage
+  //     );
+
+  //     // On component unmount, remove the event listener
+  //     return () => {
+  //       navigator.serviceWorker.removeEventListener(
+  //         "message",
+  //         handleServiceWorkerMessage
+  //       );
+  //     };
+  //   }
+  // }, [url]);
+  useEffect(() => {
+    if (!url) return;
     console.log("registering service worker");
     if ("serviceWorker" in navigator) {
-      const swURL = `${url}/sw.js`; //change "/Lamborghini/sw.js" for production
-      const swScope = `${url}/`; // change "/Lamborghini/" for production
+      const swURL = `${url}/sw.js`;
+      const swScope = `${url}/`;
 
-      window.addEventListener("load", async () => {
-        console.log("window loaded");
-        const registerSW = await navigator.serviceWorker.register(swURL, {
-          scope: swScope,
-        });
-        
-        // Hit on First time registration
-        if (registerSW.installing) {
-          console.log("installing");
-          registerSW.installing?.addEventListener("statechange", (e) => {
-            const target = e.target as ServiceWorker;
-            if (target.state === "activated") {
-              window.location.reload();
-            }
+      (async () => {
+        try {
+          const registerSW = await navigator.serviceWorker.register(swURL, {
+            scope: swScope,
           });
+          console.log("Service Worker registered");
+
+          if (registerSW.installing) {
+            console.log("installing");
+            registerSW.installing?.addEventListener("statechange", (e) => {
+              const target = e.target as ServiceWorker;
+              if (target.state === "activated") {
+                window.location.reload();
+              }
+            });
+          }
+
+          if (registerSW.active) {
+            registerSW.active.postMessage({ type: "CHECK_CACHE_STATUS" });
+          }
+
+          // Listen for messages from the service worker
+          function handleServiceWorkerMessage(event: MessageEvent) {
+            if (event.data && event.data.type === "CACHE_PROGRESS") {
+              setCount(event.data.progress);
+            } else if (event.data && event.data.type === "CACHE_COMPLETE") {
+              setCount(100);
+            }
+          }
+
+          // Add the event listener for service worker messages
+          navigator.serviceWorker.addEventListener(
+            "message",
+            handleServiceWorkerMessage
+          );
+
+          // On component unmount, remove the event listener
+          return () => {
+            navigator.serviceWorker.removeEventListener(
+              "message",
+              handleServiceWorkerMessage
+            );
+          };
+        } catch (error) {
+          console.error("Service Worker registration failed:", error);
         }
-
-        // Send message on first reload
-        if (registerSW.active) {
-          registerSW.active.postMessage({ type: "CHECK_CACHE_STATUS" });
-        }
-      });
-
-      // Listen for messages from the service worker
-      function handleServiceWorkerMessage(event: MessageEvent) {
-        if (event.data && event.data.type === "CACHE_PROGRESS") {
-          setCount(event.data.progress);
-        } else if (event.data && event.data.type === "CACHE_COMPLETE") {
-          setCount(100);
-        }
-      }
-
-      // Add the event listener for service worker messages
-      navigator.serviceWorker.addEventListener(
-        "message",
-        handleServiceWorkerMessage
-      );
-
-      // On component unmount, remove the event listener
-      return () => {
-        navigator.serviceWorker.removeEventListener(
-          "message",
-          handleServiceWorkerMessage
-        );
-      };
+      })();
     }
   }, [url]);
 
