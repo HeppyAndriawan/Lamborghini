@@ -51,7 +51,6 @@ export default function HomeLanding() {
         });
 
         // Hit on First time registration
-        if (!registerSW) return;
         if (registerSW.installing) {
           registerSW.installing?.addEventListener("statechange", (e) => {
             const target = e.target as ServiceWorker;
