@@ -462,7 +462,7 @@ export const Loading = ({ number }: Loading) => {
       id="loading"
       className={`w-full h-screen flex justify-center items-center z-49 bg-background `}
     >
-      <div className="w-1/3 mx-auto flex flex-col items-center">
+      <div className="w-1/3 mx-auto flex flex-col items-center mb-[11vh]">
         <Image
           src={`${baseurl + "asset/logo.svg"}`}
           width={40*3}
@@ -541,7 +541,7 @@ export const Power = () => {
       id="Power"
       className="section snap-start shrink-0 w-full h-screen flex flex-col items-center md:container z-[2] mx-auto relative"
     >
-      <div className="lg:w-1/3 md:w-1/2 sm:w-[90%] text-center mt-[100px]">
+      <div className="lg:w-1/3 md:w-1/2 sm:w-[90%] text-center mt-[11vh]">
         <h5 className="text-center text-[--gold] md:text-3xl sm:2xl font-semibold">
           Lamborghini
         </h5>
