@@ -541,7 +541,7 @@ export const Power = () => {
       id="Power"
       className="section snap-start shrink-0 w-full h-screen flex flex-col items-center md:container z-[2] mx-auto relative"
     >
-      <div className="lg:w-1/3 md:w-1/2 sm:w-[90%] text-center mt-24">
+      <div className="lg:w-1/3 md:w-1/2 sm:w-[90%] text-center mt-[100px]">
         <h5 className="text-center text-[--gold] md:text-3xl sm:2xl font-semibold">
           Lamborghini
         </h5>
