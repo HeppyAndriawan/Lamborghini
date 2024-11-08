@@ -184,7 +184,7 @@ export default function HomeLanding() {
   return (
     <div
       id="container"
-      className="w-full h-screen flex flex-col overflow-y-scroll snap-y snap-mandatory relative overflow-hidden"
+      className="w-full h-screen flex flex-col overflow-hidden overflow-y-scroll snap-y snap-mandatory relative"
     >
       <Loading number={count} />
 
@@ -350,7 +350,7 @@ export const Navigation = () => {
     );
   }
   return (
-    <header className="container mx-auto lg:px-[3%] md:px-[5%] w-full md:flex sm:hidden flex justify-between items-center xl:px-0 md:p-4 fixed top-0 left-0 right-0 z-50">
+    <header className="container mx-auto lg:px-[3%] md:px-[5%] w-full md:flex sm:hidden flex justify-between items-center md:p-4 fixed top-0 left-0 right-0 z-50">
       <div className="flex items-center">
         <Image
           src={`${baseurl + "asset/logo.svg"}`}
@@ -1112,7 +1112,7 @@ export const Container3D = () => {
   const positionObject: PositionObject = [
     {
       id: "Power",
-      position: { x: 0.2, y: -0.7, z: 8 },
+      position: { x: 0.3, y: -0.7, z: 8 },
       rotation: { x: 0, y: -0.5, z: 0 },
     },
     {
@@ -1122,12 +1122,12 @@ export const Container3D = () => {
     },
     {
       id: "Design",
-      position: { x: 1.8, y: -0.5, z: 5 },
+      position: { x: 1.2, y: -0.5, z: 5 },
       rotation: { x: 0.4, y: 0.5, z: 0 },
     },
     {
       id: "Specifications",
-      position: { x: -2, y: -0.5, z: 5 },
+      position: { x: -1.2, y: -0.5, z: 5 },
       rotation: { x: 0.4, y: -0.5, z: 0 },
     },
     {
@@ -1142,7 +1142,7 @@ export const Container3D = () => {
     },
     {
       id: "Wheels",
-      position: { x: 1.35, y: -0.5, z: 12 },
+      position: { x: 1, y: -0.5, z: 12 },
       rotation: { x: 0, y: -3, z: 0 },
     },
   ];
@@ -1186,7 +1186,7 @@ export const Container3D = () => {
   const positionObject_MD: PositionObject = [
     {
       id: "Power",
-      position: { x: 0.2, y: -0.7, z: 8 },
+      position: { x: 0.25, y: -0.7, z: 7 },
       rotation: { x: 0, y: -0.5, z: 0 },
     },
     {
@@ -1196,27 +1196,27 @@ export const Container3D = () => {
     },
     {
       id: "Design",
-      position: { x: 1.8, y: -0.5, z: 5 },
+      position: { x: .5, y: -0.5, z: 5 },
       rotation: { x: 0.4, y: 0.5, z: 0 },
     },
     {
       id: "Specifications",
-      position: { x: -2, y: -0.5, z: 5 },
+      position: { x: 0, y: -0.5, z: 5 },
       rotation: { x: 0.4, y: -0.5, z: 0 },
     },
     {
       id: "SteeringSuspension",
-      position: { x: 0.8, y: -0.7, z: 13 },
+      position: { x: 0.7, y: -0.7, z: 13 },
       rotation: { x: 0, y: -2.4, z: 0 },
     },
     {
       id: "Engine",
-      position: { x: -1.8, y: -0.4, z: 10.5 },
+      position: { x: -1.6, y: -0.3, z: 10.5 },
       rotation: { x: 0.4, y: 4, z: 0 },
     },
     {
       id: "Wheels",
-      position: { x: 1.35, y: -0.5, z: 12 },
+      position: { x: .95, y: -0.5, z: 12 },
       rotation: { x: 0, y: -3, z: 0 },
     },
   ];
@@ -1297,10 +1297,10 @@ export const Container3D = () => {
       "(min-width: 1024px) and (orientation:portrait)"
     ).matches;
     const tablet = window.matchMedia(
-      "(min-width: 768px) and (max-width: 1024px)"
+      "(min-width: 768px) and (max-width: 1023px)"
     ).matches;
     const mobile = window.matchMedia(
-      "(min-width: 320px) and (max-width: 768px)"
+      "(min-width: 320px) and (max-width: 767px)"
     ).matches;
 
     const setCamera = async () => {
