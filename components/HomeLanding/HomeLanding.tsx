@@ -571,7 +571,7 @@ export const CarBlockContainer = () => {
           className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white/90 dark:bg-background/70"
         ></div>
       </div>
-      <div className="w-full h-[100dvh] flex lg:flex-row md:flex-row sm:flex-col-reverse">
+      <div className="w-full h-screen flex lg:flex-row md:flex-row sm:flex-col-reverse">
         <div
           data-aos="fade-right"
           className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white/90 dark:bg-background/70"
