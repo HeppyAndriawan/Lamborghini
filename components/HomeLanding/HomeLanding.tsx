@@ -11,6 +11,7 @@ import { gsap } from "gsap";
 import Image from "next/image";
 import $ from "jquery";
 import { useCartStore, ZustandProps } from "./store/useHomeLanding";
+import { toast } from "sonner";
 
 import {
   AlertDialog,
@@ -60,7 +61,10 @@ export default function HomeLanding() {
             console.log("installing");
             registerSW.installing.addEventListener("statechange", (e) => {
               const target = e.target as ServiceWorker;
-              console.log("Service Worker State", target.state);
+              toast("Installing...", {
+                description: `Status: ${target.state}`,
+                duration: 15000,
+              });
               if (target.state === "redundant") {
                 navigator.serviceWorker
                   .getRegistrations()
