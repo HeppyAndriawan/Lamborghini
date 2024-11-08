@@ -918,7 +918,7 @@ export const Wheels = () => {
         data-aos="fade-right"
         className="md:w-1/2 sm:w-full md:h-screen sm:h-[50vh] px-8 py-5 sm:p-0 flex md:items-center text-pretty"
       >
-        <div className="md:max-w-[80%] sm:w-full sm:max-h-[40vh] sm:my-5 h-fit ">
+        <div className="md:max-w-[80%] sm:w-full sm:max-h-[50vh] sm:my-5 h-fit ">
           <h1 className="text-[--gold] text-3xl font-semibold mb-6">WHEELS</h1>
           <ScrollArea className="w-full md:max-h-[50vh] sm:max-h-[27vh] overflow-y-scroll">
             <ul className="w-full text-sm text-pretty list-disc mb-5">
