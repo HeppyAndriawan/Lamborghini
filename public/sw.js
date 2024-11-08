@@ -11,12 +11,18 @@ const ASSETS = [
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      // console.log("[Service Worker] Caching assets during install...");
-      return cache.addAll(ASSETS);
+      return Promise.all(
+        ASSETS.map((asset) => {
+          return cache.add(asset).catch((error) => {
+            console.error(`Failed to cache ${asset}:`, error);
+          });
+        })
+      );
     })
   );
   self.skipWaiting();
 });
+
 
 // Activate the service worker and immediately check the cache status
 self.addEventListener("activate", (event) => {
@@ -32,27 +38,25 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       caches.open(CACHE_NAME).then((cache) => {
         return cache.match(event.request).then((cachedResponse) => {
-          if (cachedResponse) {
-            // console.log(
-            //   `[Service Worker] Serving cached: ${requestUrl.pathname}`
-            // );
-            broadcastProgress();
-            return cachedResponse;
-          } else {
-            // console.log(
-            //   `[Service Worker] Fetching and caching: ${requestUrl.pathname}`
-            // );
-            return fetch(event.request).then((networkResponse) => {
-              cache.put(event.request, networkResponse.clone());
-              broadcastProgress();
-              return networkResponse;
-            });
-          }
+          return (
+            cachedResponse ||
+            fetch(event.request)
+              .then((networkResponse) => {
+                cache.put(event.request, networkResponse.clone());
+                broadcastProgress();
+                return networkResponse;
+              })
+              .catch((error) => {
+                console.error(`Network request failed for ${event.request.url}:`, error);
+                return new Response("Network error occurred", { status: 408 });
+              })
+          );
         });
       })
     );
   }
 });
+
 
 // Listen for messages from clients requesting cache status
 self.addEventListener("message", (event) => {
