@@ -534,7 +534,7 @@ export const Loading = ({ number }: Loading) => {
 
 export const CarBlockContainer = () => {
   return (
-    <div className="w-full h-screen absolute top-0 left-0 right-0 bottom-0 bg-transparent z-1">
+    <div className="w-full h-[100dvh] absolute top-0 left-0 right-0 bottom-0 bg-transparent z-1">
       <div className="w-full h-[100dvh]"></div>
       <div className="w-full h-[100dvh] flex lg:flex-row md:flex-row sm:flex-col">
         <div className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full"></div>
