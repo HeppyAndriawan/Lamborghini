@@ -912,7 +912,7 @@ export const Wheels = () => {
   return (
     <div
       id="Wheels"
-      className="section snap-end shrink-0 w-full h-[100dvh] flex md:flex-row sm:flex-col-reverse items-center md:container z-[2] md:mx-auto sm:px-[5%]"
+      className="section md:snap-end sm:snap-end shrink-0 w-full md:h-[100dvh] sm:h-screen flex md:flex-row sm:flex-col-reverse items-center md:container z-[2] md:mx-auto sm:px-[5%]"
     >
       <div
         data-aos="fade-right"
