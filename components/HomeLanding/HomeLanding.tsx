@@ -39,7 +39,7 @@ import "aos/dist/aos.css";
 export default function HomeLanding() {
   const [count, setCount] = useState(1);
 
-  //Detect is mobile
+  // Detect is mobile
   const [isMobile, setisMobile] = useState(false);
   useEffect(() => {
     const mobile = window.matchMedia(
@@ -69,6 +69,11 @@ export default function HomeLanding() {
           });
 
           if (registerSW.installing) {
+            toast("Installing...", {
+              description: `Status: ${registerSW.installing.state}`,
+              duration: 15000,
+            });
+
             registerSW.installing.addEventListener("statechange", (e) => {
               const target = e.target as ServiceWorker;
 
@@ -596,7 +601,7 @@ export const Power = () => {
           Centenario
         </h1>
       </div>
-      <div className="lg:w-1/3 md:w-1/2 sm:w-full absolute bottom-[5vh]">
+      <div className="lg:w-1/3 md:w-1/2 sm:w-full absolute bottom-[4.5vh]">
         <ul className="w-full flex flex-row flex-wrap md:justify-between sm:justify-center items-center text-center md:my-6 px-8 md:py-4 md:bg-[--backgroundCar] md:rounded-full sm:rounded-[10px]">
           <li className="md:w-1/3 sm:w-1/2 sm:mb-4">
             <h1 className="text-[--gold] text-sm font-semibold">POWER</h1>
