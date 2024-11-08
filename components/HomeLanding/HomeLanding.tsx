@@ -39,6 +39,18 @@ import "aos/dist/aos.css";
 export default function HomeLanding() {
   const [count, setCount] = useState(1);
 
+  //Detect is mobile
+  const [isMobile, setisMobile] = useState(false);
+  useEffect(() => {
+    const mobile = window.matchMedia(
+      "(min-width: 320px) and (max-width: 767px)"
+    ).matches;
+    if (mobile) {
+      $("#Footer").removeClass("hidden");
+    }
+    setisMobile(mobile);
+  }, []);
+
   // Register Service worker
   const url = process.env.NODE_ENV === "development" ? "" : "/Lamborghini";
   useEffect(() => {
@@ -167,7 +179,7 @@ export default function HomeLanding() {
   return (
     <div
       id="container"
-      className="w-full h-screen flex flex-col overflow-y-scroll snap-y snap-mandatory relative"
+      className="w-full h-screen flex flex-col overflow-y-scroll snap-y snap-mandatory relative overflow-hidden"
     >
       <Loading number={count} />
 
@@ -187,7 +199,7 @@ export default function HomeLanding() {
           <SteeringSuspension />
           <Engine />
           <Wheels />
-          <Footer lastComponent="Wheels" />
+          {!isMobile && <Footer lastComponent="Wheels" />}
         </Fragment>
       )}
     </div>
@@ -272,58 +284,61 @@ export const Navigation = () => {
             </svg>
           }
           extraButton={
-            <button
-              onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-              className="w-full bg-[--gold] text-white px-[1rem] py-[.5rem] text-sm font-bold flex flex-row justify-center rounded-[10px]"
-            >
-              <div className="flex flex-row items-center">
-                {theme === "dark" ? (
-                  <Fragment>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="lucide lucide-sun w-[15px] h-[15px] mr-[5px]"
-                    >
-                      <circle cx="12" cy="12" r="4" />
-                      <path d="M12 2v2" />
-                      <path d="M12 20v2" />
-                      <path d="m4.93 4.93 1.41 1.41" />
-                      <path d="m17.66 17.66 1.41 1.41" />
-                      <path d="M2 12h2" />
-                      <path d="M20 12h2" />
-                      <path d="m6.34 17.66-1.41 1.41" />
-                      <path d="m19.07 4.93-1.41 1.41" />
-                    </svg>
-                    <span>Light</span>
-                  </Fragment>
-                ) : (
-                  <Fragment>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="lucide lucide-moon w-[15px] h-[15px] mr-[5px]"
-                    >
-                      <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-                    </svg>
-                    <span>Dark</span>
-                  </Fragment>
-                )}
-              </div>
-            </button>
+            <div className="w-full h-fit flex-flex-col">
+              <button
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                className="w-full bg-[--gold] text-white px-[1rem] py-[.5rem] mt-4 sm:mb-4 text-sm font-bold flex flex-row justify-center rounded-[10px]"
+              >
+                <div className="flex flex-row items-center">
+                  {theme === "dark" ? (
+                    <Fragment>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="lucide lucide-sun w-[15px] h-[15px] mr-[5px]"
+                      >
+                        <circle cx="12" cy="12" r="4" />
+                        <path d="M12 2v2" />
+                        <path d="M12 20v2" />
+                        <path d="m4.93 4.93 1.41 1.41" />
+                        <path d="m17.66 17.66 1.41 1.41" />
+                        <path d="M2 12h2" />
+                        <path d="M20 12h2" />
+                        <path d="m6.34 17.66-1.41 1.41" />
+                        <path d="m19.07 4.93-1.41 1.41" />
+                      </svg>
+                      <span>Light</span>
+                    </Fragment>
+                  ) : (
+                    <Fragment>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="lucide lucide-moon w-[15px] h-[15px] mr-[5px]"
+                      >
+                        <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+                      </svg>
+                      <span>Dark</span>
+                    </Fragment>
+                  )}
+                </div>
+              </button>
+              <Footer lastComponent="Wheels" />
+            </div>
           }
         />
       </header>
@@ -339,7 +354,7 @@ export const Navigation = () => {
           alt="logo"
         />
       </div>
-      <nav className="flex space-x-4 items-center bg-background dark:bg-background lg:ml-20 px-6 py-2 rounded-full">
+      <nav className="flex space-x-4 items-center bg-[--backgroundCar] dark:bg-[--backgroundCar] lg:ml-20 px-6 py-2 rounded-full">
         {mobileNavigation.map((list, index) => (
           <a
             key={index + list.title}
@@ -492,7 +507,7 @@ export const Loading = ({ number }: Loading) => {
   return (
     <div
       id="loading"
-      className={`w-full h-[100dvh] flex justify-center items-center z-49 bg-background `}
+      className={`w-full h-[100dvh] flex justify-center items-center z-49 bg-[--backgroundCar] `}
     >
       <div className="w-1/3 mx-auto flex flex-col items-center mb-[11vh]">
         <Image
@@ -525,13 +540,13 @@ export const CarBlockContainer = () => {
         <div className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full"></div>
         <div
           data-aos="fade-left"
-          className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white/90 dark:bg-[#181818]/70"
+          className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white/90 dark:bg-background/70"
         ></div>
       </div>
       <div className="w-full h-[100dvh] flex lg:flex-row md:flex-row sm:flex-col-reverse">
         <div
           data-aos="fade-right"
-          className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white/90 dark:bg-[#181818]/70"
+          className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white/90 dark:bg-background/70"
         ></div>
         <div className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full"></div>
       </div>
@@ -539,13 +554,13 @@ export const CarBlockContainer = () => {
         <div className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full"></div>
         <div
           data-aos="fade-left"
-          className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white/90 dark:bg-[#181818]/70"
+          className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white/90 dark:bg-background/70"
         ></div>
       </div>
       <div className="w-full h-[100dvh] flex lg:flex-row md:flex-row sm:flex-col-reverse">
         <div
           data-aos="fade-right"
-          className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white/90 dark:bg-[#181818]/70"
+          className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white/90 dark:bg-background/70"
         ></div>
         <div className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full"></div>
       </div>
@@ -553,13 +568,13 @@ export const CarBlockContainer = () => {
         <div className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full"></div>
         <div
           data-aos="fade-left"
-          className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white/90 dark:bg-[#181818]/70"
+          className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white/90 dark:bg-background/70"
         ></div>
       </div>
       <div className="w-full h-[100dvh] flex lg:flex-row md:flex-row sm:flex-col-reverse">
         <div
           data-aos="fade-right"
-          className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white/90 dark:bg-[#181818]/70"
+          className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white/90 dark:bg-background/70"
         ></div>
         <div className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full"></div>
       </div>
@@ -571,7 +586,7 @@ export const Power = () => {
   return (
     <div
       id="Power"
-      className="section snap-start shrink-0 w-full h-[100dvh] flex flex-col items-center md:container md:mx-auto relative"
+      className="section snap-start shrink-0 w-full h-[100dvh] flex flex-col items-center md:container md:mx-auto relative overflow-hidden"
     >
       <div className="lg:w-1/3 md:w-1/2 sm:w-[90%] text-center mt-[11vh]">
         <h5 className="text-center text-[--gold] md:text-3xl sm:2xl font-semibold">
@@ -582,7 +597,7 @@ export const Power = () => {
         </h1>
       </div>
       <div className="lg:w-1/3 md:w-1/2 sm:w-full absolute bottom-[5vh]">
-        <ul className="w-full flex flex-row flex-wrap md:justify-between sm:justify-center items-center text-center md:my-6 px-8 py-4 md:bg-background md:rounded-full sm:rounded-[10px]">
+        <ul className="w-full flex flex-row flex-wrap md:justify-between sm:justify-center items-center text-center md:my-6 px-8 md:py-4 md:bg-[--backgroundCar] md:rounded-full sm:rounded-[10px]">
           <li className="md:w-1/3 sm:w-1/2 sm:mb-4">
             <h1 className="text-[--gold] text-sm font-semibold">POWER</h1>
             <p className="text-sm">770 CV / 566 kW</p>
@@ -591,7 +606,7 @@ export const Power = () => {
             <h1 className="text-[--gold] text-sm font-semibold">MAX. SPEED</h1>
             <p className="text-sm">{`>350 km/h`}</p>
           </li>
-          <li className="md:w-1/3 sm:w-1/2 sm:mb-4">
+          <li className="md:w-1/3 sm:w-1/2">
             <h1 className="text-[--gold] text-sm font-semibold">0-100 km/h</h1>
             <p className="text-sm">{`<2,9 s`}</p>
           </li>
@@ -616,7 +631,7 @@ export const Overview = () => {
           <h1 className="text-[--gold] text-3xl font-semibold mb-6">
             OVERVIEW
           </h1>
-          <ScrollArea className="sm:max-h-[30vh] h-fit overflow-y-scroll">
+          <ScrollArea className="sm:max-h-[27vh] h-fit overflow-y-scroll">
             <p className="text-black dark:text-white mb-5">
               The Lamborghini Centenario exemplifies the innovative design and
               engineering skills of the House of the Raging Bull. The finest
@@ -644,7 +659,7 @@ export const Design = () => {
       >
         <div className="md:max-w-[80%] sm:w-full sm:max-h-[40vh] sm:my-5 h-fit ">
           <h1 className="text-[--gold] text-3xl font-semibold mb-6">DESIGN</h1>
-          <ScrollArea className="sm:max-h-[30vh] md:h-fit overflow-y-scroll">
+          <ScrollArea className="sm:max-h-[27vh] md:h-fit overflow-y-scroll">
             <p className="text-black dark:text-white mb-5">
               Here are the technical characteristics of the Lamborghini
               Centenario: equipped with a 770 CV aspirated V12 engine springing
@@ -681,7 +696,7 @@ export const Specifications = () => {
           <h1 className="text-[--gold] text-3xl font-semibold mb-6">
             SPECIFICATIONS
           </h1>
-          <ScrollArea className="w-full md:max-h-[40vh] sm:max-h-[30vh] overflow-y-scroll">
+          <ScrollArea className="w-full md:max-h-[40vh] sm:max-h-[27vh] overflow-y-scroll">
             <ul className="w-full text-sm text-pretty list-disc mb-5">
               <li className="w-full flex flex-row justify-between mb-4">
                 <span className="w-1/2 text-black dark:text-white font-semibold">
@@ -747,7 +762,7 @@ export const SteeringSuspension = () => {
           <h1 className="text-[--gold] text-3xl font-semibold mb-6">
             STEERING AND SUSPENSION
           </h1>
-          <ScrollArea className="w-full md:max-h-[50vh] sm:max-h-[30vh] overflow-y-scroll">
+          <ScrollArea className="w-full md:max-h-[50vh] sm:max-h-[27vh] overflow-y-scroll">
             <ul className="w-full text-sm text-pretty list-disc mb-5">
               <li className="w-full flex flex-row justify-between mb-4">
                 <span className="w-[35%] text-black dark:text-white font-semibold">
@@ -812,7 +827,7 @@ export const Engine = () => {
       >
         <div className="md:max-w-[80%] sm:w-full sm:max-h-[40vh] sm:my-5 h-fit ">
           <h1 className="text-[--gold] text-3xl font-semibold mb-6">ENGINE</h1>
-          <ScrollArea className="w-full md:max-h-[50vh] sm:max-h-[30vh] overflow-y-scroll">
+          <ScrollArea className="w-full md:max-h-[50vh] sm:max-h-[27vh] overflow-y-scroll">
             <ul className="w-full text-sm text-pretty list-disc mb-5">
               <li className="w-full flex flex-row justify-between mb-4">
                 <span className="w-1/2 text-black dark:text-white font-semibold">
@@ -905,7 +920,7 @@ export const Wheels = () => {
       >
         <div className="md:max-w-[80%] sm:w-full sm:max-h-[40vh] sm:my-5 h-fit ">
           <h1 className="text-[--gold] text-3xl font-semibold mb-6">WHEELS</h1>
-          <ScrollArea className="w-full md:max-h-[50vh] sm:max-h-[30vh] overflow-y-scroll">
+          <ScrollArea className="w-full md:max-h-[50vh] sm:max-h-[27vh] overflow-y-scroll">
             <ul className="w-full text-sm text-pretty list-disc mb-5">
               <li className="w-full flex flex-row justify-between mb-4">
                 <span className="w-1/2 text-black dark:text-white font-semibold">
@@ -976,6 +991,13 @@ export const Footer = ({ lastComponent }: Footer) => {
 
   // Show Footer at the end
   useEffect(() => {
+    const mobile = window.matchMedia(
+      "(min-width: 320px) and (max-width: 767px)"
+    ).matches;
+    if (mobile) {
+      $("#Footer").removeClass("hidden");
+      return;
+    }
     const container = document.getElementById("container");
     const section = document.querySelectorAll(".section");
 
@@ -1002,13 +1024,13 @@ export const Footer = ({ lastComponent }: Footer) => {
   return (
     <footer
       id="Footer"
-      className="container mx-auto lg:px-[3%] md:px-[5%] w-full p-4 border-t border-gray-200 sticky bottom-0 left-0 right-0 hidden"
+      className="container mx-auto lg:px-[3%] md:px-[5%] w-full p-4 md:border-t md:border-gray-200 sticky bottom-0 left-0 right-0 hidden"
     >
-      <div className="flex md:flex-row sm:flex-col md:justify-between  md:items-center">
-        <p className="text-black dark:text-white sm:text-center sm:mb-2">
+      <div className="flex md:flex-row sm:flex-col-reverse md:justify-between  md:items-center">
+        <p className="text-black dark:text-white sm:text-center">
           &copy; {year} Lamborghini
         </p>
-        <div className="flex flex-row flex-wrap sm:justify-between items-center text-gray-600 sm:text-[14px]">
+        <div className="flex flex-row flex-wrap sm:justify-between items-center text-gray-600 sm:text-[14px] sm:mb-4">
           <Dialog
             title="Copyright"
             dataList={copyright}
@@ -1196,7 +1218,7 @@ export const Container3D = () => {
   const positionObject_SM: PositionObject = [
     {
       id: "Power",
-      position: { x: 0, y: 0.1, z: 4.5 },
+      position: { x: 0, y: -0.1, z: 4.5 },
       rotation: { x: 1, y: 3.14, z: 0 },
     },
     {
@@ -1211,7 +1233,7 @@ export const Container3D = () => {
     },
     {
       id: "Specifications",
-      position: { x: 0, y: 1, z: 7 },
+      position: { x: 0, y: 0.9, z: 7 },
       rotation: { x: 0.4, y: -1, z: 0 },
     },
     {
@@ -1487,10 +1509,12 @@ export const Container3D = () => {
 
       resizeTimeout.current = setTimeout(() => {
         if (cameraRef.current && rendererRef.current) {
-          console.log("Resize");
           cameraRef.current.aspect = window.innerWidth / window.innerHeight;
           cameraRef.current.updateProjectionMatrix();
           rendererRef.current.setSize(window.innerWidth, window.innerHeight);
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
         }
       }, 200);
     };
