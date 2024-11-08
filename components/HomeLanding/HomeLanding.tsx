@@ -41,7 +41,12 @@ export default function HomeLanding() {
   // Register Service worker
   const url = process.env.NODE_ENV === "development" ? "" : "/Lamborghini";
   useEffect(() => {
+    if (url === undefined) {
+      console.log("url", url);
+      return;
+    }
     if ("serviceWorker" in navigator) {
+      console.log("Service Worker is supported");
       const swURL = `${url}/sw.js`;
       const swScope = `${url}/`;
 
@@ -53,8 +58,25 @@ export default function HomeLanding() {
 
           if (registerSW.installing) {
             console.log("installing");
-            registerSW.installing?.addEventListener("statechange", (e) => {
+            registerSW.installing.addEventListener("statechange", (e) => {
               const target = e.target as ServiceWorker;
+              console.log("Service Worker State", target.state);
+              if (target.state === "redundant") {
+                navigator.serviceWorker
+                  .getRegistrations()
+                  .then((registrations) => {
+                    if (registrations.length !== 0) {
+                      registrations.forEach((element) => {
+                        element.unregister();
+                      });
+                    }
+
+                    setTimeout(() => {
+                      console.log("uninstall sw succesfuly");
+                      window.location.reload();
+                    }, 3000);
+                  });
+              }
               if (target.state === "activated") {
                 setTimeout(() => {
                   window.location.reload();
@@ -66,6 +88,10 @@ export default function HomeLanding() {
           if (registerSW.active) {
             registerSW.active.postMessage({ type: "CHECK_CACHE_STATUS" });
           }
+
+          navigator.serviceWorker.ready.then((registration) => {
+            registration.active?.postMessage({ type: "CHECK_CACHE_STATUS" });
+          });
 
           // Listen for messages from the service worker
           function handleServiceWorkerMessage(event: MessageEvent) {
@@ -493,13 +519,13 @@ export const CarBlockContainer = () => {
         <div className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full"></div>
         <div
           data-aos="fade-left"
-          className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white dark:bg-[#181818]"
+          className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white/90 dark:bg-[#181818]/70"
         ></div>
       </div>
       <div className="w-full h-[100dvh] flex lg:flex-row md:flex-row sm:flex-col-reverse">
         <div
           data-aos="fade-right"
-          className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white dark:bg-[#181818]"
+          className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white/90 dark:bg-[#181818]/70"
         ></div>
         <div className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full"></div>
       </div>
@@ -507,13 +533,13 @@ export const CarBlockContainer = () => {
         <div className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full"></div>
         <div
           data-aos="fade-left"
-          className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white dark:bg-[#181818]"
+          className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white/90 dark:bg-[#181818]/70"
         ></div>
       </div>
       <div className="w-full h-[100dvh] flex lg:flex-row md:flex-row sm:flex-col-reverse">
         <div
           data-aos="fade-right"
-          className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white dark:bg-[#181818]"
+          className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white/90 dark:bg-[#181818]/70"
         ></div>
         <div className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full"></div>
       </div>
@@ -521,13 +547,13 @@ export const CarBlockContainer = () => {
         <div className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full"></div>
         <div
           data-aos="fade-left"
-          className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white dark:bg-[#181818]"
+          className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white/90 dark:bg-[#181818]/70"
         ></div>
       </div>
       <div className="w-full h-[100dvh] flex lg:flex-row md:flex-row sm:flex-col-reverse">
         <div
           data-aos="fade-right"
-          className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white dark:bg-[#181818]"
+          className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full bg-white/90 dark:bg-[#181818]/70"
         ></div>
         <div className="md:w-1/2 md:h-screen sm:h-[50vh] sm:w-full"></div>
       </div>
