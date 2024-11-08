@@ -47,7 +47,6 @@ export default function HomeLanding() {
       return;
     }
     if ("serviceWorker" in navigator) {
-      console.log("Service Worker is supported");
       const swURL = `${url}/sw.js`;
       const swScope = `${url}/`;
 
@@ -58,14 +57,14 @@ export default function HomeLanding() {
           });
 
           if (registerSW.installing) {
-            console.log("installing");
             registerSW.installing.addEventListener("statechange", (e) => {
               const target = e.target as ServiceWorker;
-              toast("Installing...", {
-                description: `Status: ${target.state}`,
-                duration: 15000,
-              });
+
               if (target.state === "redundant") {
+                toast("Installing...", {
+                  description: `Status: ${target.state}`,
+                  duration: 15000,
+                });
                 navigator.serviceWorker
                   .getRegistrations()
                   .then((registrations) => {
@@ -76,15 +75,18 @@ export default function HomeLanding() {
                     }
 
                     setTimeout(() => {
-                      console.log("uninstall sw succesfuly");
                       window.location.reload();
-                    }, 3000);
+                    }, 5000);
                   });
               }
               if (target.state === "activated") {
+                toast("Installing...", {
+                  description: `Status: ${target.state}`,
+                  duration: 15000,
+                });
                 setTimeout(() => {
                   window.location.reload();
-                }, 1000);
+                }, 5000);
               }
             });
           }
