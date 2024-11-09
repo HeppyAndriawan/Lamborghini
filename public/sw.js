@@ -1,6 +1,6 @@
 // public/service-worker.js
 const CACHE_NAME = "asset-cache-v1";
-const ASSET_FOLDER = `/asset`; //change "/Lamborghini/asset" for production
+const ASSET_FOLDER = `/Lamborghini/asset`; //change "/Lamborghini/asset" for production
 const ASSETS = [
   `${ASSET_FOLDER}/lamborghini_centenario_lp-770_interior_sdc.glb`,
   `${ASSET_FOLDER}/logo.svg`,
