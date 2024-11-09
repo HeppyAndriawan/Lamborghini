@@ -41,14 +41,21 @@ export default function HomeLanding() {
 
   // Detect is mobile
   const [isMobile, setisMobile] = useState(false);
+  const [isMobileLandscape, setisMobileLandscape] = useState(false);
   useEffect(() => {
+    const mobileLandscape = window.matchMedia(
+      "(min-width: 568px) and (max-width: 1023px) and (orientation: landscape)"
+    ).matches;
     const mobile = window.matchMedia(
       "(min-width: 320px) and (max-width: 767px)"
     ).matches;
     if (mobile) {
       $("#Footer").removeClass("hidden");
     }
-    setisMobile(mobile);
+    setTimeout(() => {
+      setisMobileLandscape(mobileLandscape);
+      setisMobile(mobile);
+    }, 1000);
   }, []);
 
   // Register Service worker
@@ -180,6 +187,10 @@ export default function HomeLanding() {
     const container = document.getElementById("container");
     container?.addEventListener("scroll", aosObserver);
   }, [isLoadOver]);
+
+  if (isMobileLandscape) {
+    return <ScreenNotSupport />;
+  }
 
   if (!isLoadOver) {
     return (
@@ -542,6 +553,56 @@ export const Loading = ({ number }: Loading) => {
   );
 };
 
+export const ScreenNotSupport = () => {
+  useEffect(() => {
+    window.addEventListener("resize", () => {
+      window.location.reload();
+    });
+  }, []);
+  return (
+    <div className="w-full h-[100dvh] flex justify-center items-center">
+      <div className="w-fit h-fit flex flex-col items-center">
+        <div className="mb-2 relative">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="lucide lucide-smartphone w-[50px] h-auto absolute top-0 left-0"
+          >
+            <rect width="14" height="20" x="5" y="2" rx="2" ry="2" />
+            <path d="M12 18h.01" />
+          </svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="lucide lucide-smartphone w-[50px] h-auto rotate-90 mt-[12.5px] ml-[12.5px]"
+          >
+            <rect width="14" height="20" x="5" y="2" rx="2" ry="2" />
+            <path d="M12 18h.01" />
+          </svg>
+        </div>
+        <h1 className="text-[--gold] text-sm font-semibold">
+          Screen Not Support
+        </h1>
+        <p className="text-sm">rotate your device</p>
+      </div>
+    </div>
+  );
+};
+
 export const CarBlockContainer = () => {
   return (
     <div className="w-full h-[100dvh] absolute top-0 left-0 right-0 bottom-0 bg-transparent z-1">
@@ -596,31 +657,37 @@ export const Power = () => {
   return (
     <div
       id="Power"
-      className="section snap-start shrink-0 w-full h-[100dvh] flex flex-col items-center md:container md:mx-auto relative overflow-hidden"
+      className="section snap-start shrink-0 w-full h-[100dvh] flex flex-col justify-center items-center md:container md:mx-auto relative overflow-hidden"
     >
-      <div className="lg:w-1/3 md:w-1/2 sm:w-[90%] text-center mt-[11vh]">
-        <h5 className="text-center text-[--gold] md:text-3xl sm:2xl font-semibold">
-          Lamborghini
-        </h5>
-        <h1 className="text-center md:text-7xl sm:text-5xl font-semibold">
-          Centenario
-        </h1>
-      </div>
-      <div className="lg:w-1/3 md:w-1/2 sm:w-full absolute bottom-[4.5vh]">
-        <ul className="w-full flex flex-row flex-wrap md:justify-between sm:justify-center items-center text-center md:my-6 px-8 md:py-4 md:bg-[--backgroundCar] md:rounded-full sm:rounded-[10px]">
-          <li className="md:w-1/3 sm:w-1/2 sm:mb-4">
-            <h1 className="text-[--gold] text-sm font-semibold">POWER</h1>
-            <p className="text-sm">770 CV / 566 kW</p>
-          </li>
-          <li className="md:w-1/3 sm:w-1/2 sm:mb-4">
-            <h1 className="text-[--gold] text-sm font-semibold">MAX. SPEED</h1>
-            <p className="text-sm">{`>350 km/h`}</p>
-          </li>
-          <li className="md:w-1/3 sm:w-1/2">
-            <h1 className="text-[--gold] text-sm font-semibold">0-100 km/h</h1>
-            <p className="text-sm">{`<2,9 s`}</p>
-          </li>
-        </ul>
+      <div className="w-full xl:h-[80vh] lg:h-[75vh] md:h-[55vh] sm:h-[100dvh] flex flex-col justify-between items-center xl:mt-[17vh] lg:mt-[10vh] md:mt-[8vh] sm:mt-[11vh] relative">
+        <div className="w-fit text-center ">
+          <h5 className="text-center text-[--gold] md:text-3xl sm:2xl font-semibold">
+            Lamborghini
+          </h5>
+          <h1 className="text-center md:text-7xl sm:text-5xl font-semibold">
+            Centenario
+          </h1>
+        </div>
+        <div className="lg:w-1/2 md:w-[70%] sm:w-full absolute bottom-[4.5vh]">
+          <ul className="w-full flex flex-row flex-wrap md:justify-between sm:justify-center text-center px-8 md:bg-[--backgroundCar] md:rounded-full sm:rounded-[10px]">
+            <li className="md:w-1/3 sm:w-1/2 sm:mb-4">
+              <h1 className="text-[--gold] text-sm font-semibold">POWER</h1>
+              <p className="text-sm">770 CV / 566 kW</p>
+            </li>
+            <li className="md:w-1/3 sm:w-1/2 sm:mb-4">
+              <h1 className="text-[--gold] text-sm font-semibold">
+                MAX. SPEED
+              </h1>
+              <p className="text-sm">{`>350 km/h`}</p>
+            </li>
+            <li className="md:w-1/3 sm:w-1/2">
+              <h1 className="text-[--gold] text-sm font-semibold">
+                0-100 km/h
+              </h1>
+              <p className="text-sm">{`<2,9 s`}</p>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   );
@@ -922,7 +989,7 @@ export const Wheels = () => {
   return (
     <div
       id="Wheels"
-      className="section md:snap-end sm:snap-end shrink-0 w-full md:h-[100dvh] sm:h-screen flex md:flex-row sm:flex-col-reverse items-center md:container z-[2] md:mx-auto sm:px-[5%] sm:relative sm:overflow-hidden"
+      className="section snap-end shrink-0 w-full md:h-[100dvh] sm:h-screen flex md:flex-row sm:flex-col-reverse items-center md:container z-[2] md:mx-auto sm:px-[5%] sm:relative sm:overflow-hidden"
     >
       <div
         data-aos="fade-right"
@@ -1117,7 +1184,7 @@ export const Container3D = () => {
   const positionObject: PositionObject = [
     {
       id: "Power",
-      position: { x: 0.3, y: -0.7, z: 8 },
+      position: { x: 0.3, y: -0.74, z: 8 },
       rotation: { x: 0, y: -0.5, z: 0 },
     },
     {
@@ -1154,7 +1221,7 @@ export const Container3D = () => {
   const positionObject_MD_Portrait: PositionObject = [
     {
       id: "Power",
-      position: { x: 0.2, y: -0.7, z: 8 },
+      position: { x: 0.3, y: -0.75, z: 8 },
       rotation: { x: 0, y: -0.5, z: 0 },
     },
     {
@@ -1164,27 +1231,27 @@ export const Container3D = () => {
     },
     {
       id: "Design",
-      position: { x: 1.8, y: -0.5, z: 5 },
+      position: { x: 0.5, y: -0.5, z: 5 },
       rotation: { x: 0.4, y: 0.5, z: 0 },
     },
     {
       id: "Specifications",
-      position: { x: -2, y: -0.5, z: 5 },
+      position: { x: 0, y: -0.5, z: 5 },
       rotation: { x: 0.4, y: -0.5, z: 0 },
     },
     {
       id: "SteeringSuspension",
-      position: { x: 0.8, y: -0.7, z: 13 },
+      position: { x: 0.7, y: -0.7, z: 13 },
       rotation: { x: 0, y: -2.4, z: 0 },
     },
     {
       id: "Engine",
-      position: { x: -1.8, y: -0.4, z: 10.5 },
+      position: { x: -1.6, y: -0.3, z: 10.5 },
       rotation: { x: 0.4, y: 4, z: 0 },
     },
     {
       id: "Wheels",
-      position: { x: 1.35, y: -0.5, z: 12 },
+      position: { x: 0.95, y: -0.5, z: 12 },
       rotation: { x: 0, y: -3, z: 0 },
     },
   ];
@@ -1228,7 +1295,7 @@ export const Container3D = () => {
   const positionObject_SM: PositionObject = [
     {
       id: "Power",
-      position: { x: 0, y: -0.1, z: 4.5 },
+      position: { x: 0, y: -0.04, z: 4.5 },
       rotation: { x: 1, y: 3.14, z: 0 },
     },
     {
@@ -1243,7 +1310,7 @@ export const Container3D = () => {
     },
     {
       id: "Specifications",
-      position: { x: 0, y: 0.9, z: 7 },
+      position: { x: 0, y: 1.3, z: 4 },
       rotation: { x: 0.4, y: -1, z: 0 },
     },
     {
