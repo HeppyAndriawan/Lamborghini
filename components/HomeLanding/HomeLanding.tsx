@@ -172,6 +172,35 @@ export default function HomeLanding() {
     }
   }, [count]);
 
+  // Reset Section Scroll Area Component
+  useEffect(() => {
+    if (count !== 100) return;
+    const container = document.getElementById("container");
+    container?.addEventListener("scroll", () => {
+      const section = document.querySelectorAll(".section");
+      let currentSection: string | undefined = undefined;
+
+      section.forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top <= window.innerHeight / 2) {
+          currentSection = el.id;
+        }
+      });
+
+      const scrollPosition = $(`#${currentSection} .scrollArea`).scrollTop();
+      const element = document.querySelectorAll(
+        `#${currentSection} .scrollArea`
+      );
+      if (scrollPosition !== 0) {
+        setTimeout(() => {
+          element.forEach((list) => {
+            list.scrollTop = -list.scrollHeight;
+          });
+        }, 1000);
+      }
+    });
+  }, [count]);
+
   // Aos Animation
   useEffect(() => {
     if (!isLoadOver) return;
@@ -708,7 +737,7 @@ export const Overview = () => {
           <h1 className="text-[--gold] text-3xl font-semibold mb-6">
             OVERVIEW
           </h1>
-          <ScrollArea className="sm:max-h-[27vh] h-fit overflow-y-scroll">
+          <ScrollArea className="scrollArea sm:max-h-[27vh] h-fit overflow-y-scroll">
             <p className="text-black dark:text-white mb-5">
               The Lamborghini Centenario exemplifies the innovative design and
               engineering skills of the House of the Raging Bull. The finest
@@ -736,7 +765,7 @@ export const Design = () => {
       >
         <div className="md:max-w-[80%] sm:w-full sm:max-h-[40vh] sm:my-5 h-fit ">
           <h1 className="text-[--gold] text-3xl font-semibold mb-6">DESIGN</h1>
-          <ScrollArea className="sm:max-h-[27vh] md:h-fit overflow-y-scroll">
+          <ScrollArea className="scrollArea sm:max-h-[27vh] md:h-fit overflow-y-scroll">
             <p className="text-black dark:text-white mb-5">
               Here are the technical characteristics of the Lamborghini
               Centenario: equipped with a 770 CV aspirated V12 engine springing
@@ -773,7 +802,7 @@ export const Specifications = () => {
           <h1 className="text-[--gold] text-3xl font-semibold mb-6">
             SPECIFICATIONS
           </h1>
-          <ScrollArea className="w-full md:max-h-[40vh] sm:max-h-[27vh] overflow-y-scroll">
+          <ScrollArea className="scrollArea w-full md:max-h-[40vh] sm:max-h-[27vh] overflow-y-scroll">
             <ul className="w-full text-sm text-pretty list-disc mb-5">
               <li className="w-full flex flex-row justify-between mb-4">
                 <span className="w-1/2 text-black dark:text-white font-semibold">
@@ -839,7 +868,7 @@ export const SteeringSuspension = () => {
           <h1 className="text-[--gold] text-3xl font-semibold mb-6">
             STEERING AND SUSPENSION
           </h1>
-          <ScrollArea className="w-full md:max-h-[50vh] sm:max-h-[27vh] overflow-y-scroll">
+          <ScrollArea className="scrollArea w-full md:max-h-[50vh] sm:max-h-[27vh] overflow-y-scroll">
             <ul className="w-full text-sm text-pretty list-disc mb-5">
               <li className="w-full flex flex-row justify-between mb-4">
                 <span className="w-[35%] text-black dark:text-white font-semibold">
@@ -904,7 +933,7 @@ export const Engine = () => {
       >
         <div className="md:max-w-[80%] sm:w-full sm:max-h-[40vh] sm:my-5 h-fit ">
           <h1 className="text-[--gold] text-3xl font-semibold mb-6">ENGINE</h1>
-          <ScrollArea className="w-full md:max-h-[50vh] sm:max-h-[27vh] overflow-y-scroll">
+          <ScrollArea className="scrollArea w-full md:max-h-[50vh] sm:max-h-[27vh] overflow-y-scroll">
             <ul className="w-full text-sm text-pretty list-disc mb-5">
               <li className="w-full flex flex-row justify-between mb-4">
                 <span className="w-1/2 text-black dark:text-white font-semibold">
@@ -997,7 +1026,7 @@ export const Wheels = () => {
       >
         <div className="md:max-w-[80%] sm:w-full sm:max-h-[50vh] sm:my-5 h-fit ">
           <h1 className="text-[--gold] text-3xl font-semibold mb-6">WHEELS</h1>
-          <ScrollArea className="w-full md:max-h-[50vh] sm:max-h-[27vh] overflow-y-scroll">
+          <ScrollArea className="scrollArea w-full md:max-h-[50vh] sm:max-h-[27vh] overflow-y-scroll">
             <ul className="w-full text-sm text-pretty list-disc mb-5">
               <li className="w-full flex flex-row justify-between mb-4">
                 <span className="w-1/2 text-black dark:text-white font-semibold">
