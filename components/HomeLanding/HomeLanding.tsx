@@ -181,32 +181,35 @@ export default function HomeLanding() {
     container?.addEventListener("scroll", aosObserver);
   }, [isLoadOver]);
 
+  if (!isLoadOver) {
+    return (
+      <div
+        id="container"
+        className="w-full h-screen flex flex-col overflow-hidden overflow-y-scroll snap-y snap-mandatory relative"
+      >
+        <Loading number={count} />
+      </div>
+    );
+  }
+
   return (
     <div
       id="container"
-      className="w-full h-screen flex flex-col overflow-hidden overflow-y-scroll snap-y snap-mandatory relative"
+      className="w-full h-[100dvh] flex flex-col overflow-hidden overflow-y-scroll snap-y snap-mandatory relative"
     >
-      <Loading number={count} />
-
-      {/* Snap Sections with margin to offset from the fixed navbar */}
-      {isLoadOver === true && (
-        <Fragment>
-          {/* Fixed Navigation */}
-          <div className="fixed top-0 w-full z-10">
-            <Navigation />
-          </div>
-          <Container3D />
-          <CarBlockContainer />
-          <Power />
-          <Overview />
-          <Design />
-          <Specifications />
-          <SteeringSuspension />
-          <Engine />
-          <Wheels />
-          {!isMobile && <Footer lastComponent="Wheels" />}
-        </Fragment>
-      )}
+      <div className="fixed top-0 w-full z-10">
+        <Navigation />
+      </div>
+      <Container3D />
+      <CarBlockContainer />
+      <Power />
+      <Overview />
+      <Design />
+      <Specifications />
+      <SteeringSuspension />
+      <Engine />
+      <Wheels />
+      {!isMobile && <Footer lastComponent="Wheels" />}
     </div>
   );
 }
