@@ -191,7 +191,7 @@ export default function HomeLanding() {
       const element = document.querySelectorAll(
         `#${currentSection} .scrollArea`
       );
-      if (scrollPosition !== 0 && element.length !== 0) {
+      if (scrollPosition !== 0 && element.length!== 0) {
         setTimeout(() => {
           element.forEach((list) => {
             list.scrollTop = -list.scrollHeight;
@@ -516,7 +516,7 @@ export const MobileNavigation = ({
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger>{title}</SheetTrigger>
-      <SheetContent className="w-full m-0">
+      <SheetContent className="w-full left-0 m-0">
         <SheetHeader>
           <SheetTitle>Menu</SheetTitle>
           <SheetDescription />
@@ -1132,25 +1132,25 @@ export const Footer = ({ lastComponent }: Footer) => {
       id="Footer"
       className="container mx-auto lg:px-[3%] md:px-[5%] w-full p-4 md:border-t md:border-gray-200 sticky bottom-0 left-0 right-0 hidden"
     >
-      <div className="flex md:flex-row sm:flex-col-reverse md:justify-between  md:items-center">
+      <div className="flex md:flex-row sm:flex-col md:justify-between items-center">
         <p className="text-black dark:text-white sm:text-center">
           &copy; {year} Lamborghini
         </p>
-        <div className="flex flex-row flex-wrap sm:justify-between items-center text-gray-600 sm:text-[14px] sm:mb-4">
+        <div className="sm:w-[70%] flex flex-row flex-wrap sm:justify-center items-center text-gray-600 sm:text-[14px]">
           <Dialog
             title="Copyright"
             dataList={copyright}
             space={true}
-            textBTNcolor="text-black dark:text-white"
+            textBTNcolor="text-black dark:text-white font-semibold"
           />
           <span className="mx-6 md:block sm:hidden">|</span>
           <Dialog
             title="Privacy Policy"
             dataList={policy}
-            textBTNcolor="text-black dark:text-white"
+            textBTNcolor="text-black dark:text-white font-semibold"
           />
           <span className="mx-6 md:block sm:hidden">|</span>
-          <div className="w-fit flex flex-row items-center">
+          <div className="w-fit sm:w-1/4 flex flex-row sm:justify-between items-center sm:hidden">
             <a
               href="#"
               className="lg:text-white md:text-black m dark:text-white"
@@ -1678,8 +1678,8 @@ export const Dialog = ({
         <span
           className={
             textBTNcolor
-              ? `${textBTNcolor} cursor-pointer`
-              : "text-gray-600 cursor-pointer"
+              ? `${textBTNcolor} cursor-pointer text-center mx-2 last:mr-0`
+              : "text-gray-600 cursor-pointer text-center mx-2 last:mr-0"
           }
         >
           {" "}
