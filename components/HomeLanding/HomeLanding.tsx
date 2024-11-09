@@ -191,7 +191,7 @@ export default function HomeLanding() {
       const element = document.querySelectorAll(
         `#${currentSection} .scrollArea`
       );
-      if (scrollPosition !== 0) {
+      if (scrollPosition !== 0 && element.length !== 0) {
         setTimeout(() => {
           element.forEach((list) => {
             list.scrollTop = -list.scrollHeight;
