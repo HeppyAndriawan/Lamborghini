@@ -516,7 +516,7 @@ export const MobileNavigation = ({
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger>{title}</SheetTrigger>
-      <SheetContent className="w-[100vw] m-0">
+      <SheetContent className="w-full m-0">
         <SheetHeader>
           <SheetTitle>Menu</SheetTitle>
           <SheetDescription />
