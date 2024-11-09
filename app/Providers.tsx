@@ -14,11 +14,9 @@ export default function Providers({ children }: ProvidersProps) {
   }, []);
 
   return (
-    <div className="w-full relative overflow-hidden">
-      <ThemeUtility>
-        <Suspense>{children}</Suspense>
-        <Toaster expand visibleToasts={9} />
-      </ThemeUtility>
-    </div>
+    <ThemeUtility>
+      <Suspense>{children}</Suspense>
+      <Toaster expand visibleToasts={9} />
+    </ThemeUtility>
   );
 }

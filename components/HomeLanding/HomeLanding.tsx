@@ -266,6 +266,7 @@ export const Navigation = () => {
             width={40}
             height={42}
             alt="logo"
+            className="w-[40px] h-auto"
           />
         </div>
         <MobileNavigation
@@ -357,6 +358,7 @@ export const Navigation = () => {
           width={40}
           height={42}
           alt="logo"
+          className="w-[40px] h-auto"
         />
       </div>
       <nav className="flex space-x-4 items-center bg-[--backgroundCar] dark:bg-[--backgroundCar] lg:ml-20 px-6 py-2 rounded-full">
@@ -1196,7 +1198,7 @@ export const Container3D = () => {
     },
     {
       id: "Design",
-      position: { x: .5, y: -0.5, z: 5 },
+      position: { x: 0.5, y: -0.5, z: 5 },
       rotation: { x: 0.4, y: 0.5, z: 0 },
     },
     {
@@ -1216,7 +1218,7 @@ export const Container3D = () => {
     },
     {
       id: "Wheels",
-      position: { x: .95, y: -0.5, z: 12 },
+      position: { x: 0.95, y: -0.5, z: 12 },
       rotation: { x: 0, y: -3, z: 0 },
     },
   ];
